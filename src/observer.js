@@ -1,3 +1,5 @@
+import Dep from './dep'
+
 class Observer {
     constructor(data) {
         this.observer(data)
@@ -23,8 +25,8 @@ class Observer {
             enumerable: true,
             configurable: true,
             get() {
-                // 进行订阅
-                Dep.target && dep.addSubs(Dep.target)
+                // 进行订阅, 在编译阶段， compiler会给template中的每个指令增加一个watcher， 在watcher取值时会设置自身为Dep.target
+                Dep.target && dep.addSubs(Dep.target) 
                 
                 return value
             },

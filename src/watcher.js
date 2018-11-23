@@ -1,3 +1,5 @@
+import Dep from './dep'
+
 class Watcher {
     constructor(vm, expr, cb) {
         this.vm = vm

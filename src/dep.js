@@ -3,10 +3,9 @@ class Dep {
         this.subs = []
     }
     addSubs(watcher) {
-        this.subs.push(watcher)
+        this.subs.push(watcher) // 添加订阅者
     }
     notify() {
-        // console.log('notified')
         this.subs.forEach(watcher => watcher.update())
     }
 }

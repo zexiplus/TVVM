@@ -1,100 +1,61 @@
-const fs = require('fs');
-const path = require('path');
-const rollup = require('rollup');
-const babel = require('rollup-plugin-babel');
-const nodeResolve = require('rollup-plugin-node-resolve');
-const commonjs = require('rollup-plugin-commonjs');
-const banner = require('bannerjs');
-const zlib = require('zlib');
-// const pkg = require('../package.json');
-const uglify = require('uglify-js');
-require('colors-cli/toxic');
+const fs = require('fs')
+const path = require('path')
+const rollup = require('rollup') 
+const uglify = require('uglify-js') // output like .min.js files
+const banner = require('bannerjs')
+const log = console.log
 
-// see below for details on the options
-const inputOptions = {
-  input: 'src/main.js',
-  plugins: [
-    nodeResolve(), // so Rollup can find `ms`
-    commonjs(), // so Rollup can convert `ms` to an ES module
-    babel({
-      exclude: 'node_modules/**', // 只编译我们的源代码
-    }),
-  ],
-};
+// import rollup config
+const { rollupInputOptions, rollupOutputOptions } = require('../config/rollup.config')
+// import uglify-js config
+const uglifyOption = require('../config/uglify.config')
 
-async function build() {
-  // create a bundle
-  const bundle = await rollup.rollup(inputOptions);
+async function build(rollupInputOptions, rollupOutputOptions,  uglifyOpt) {
+  const bundle = await rollup.rollup(rollupInputOptions)
 
-  const uglifyOption = {
-    compress: {
-      pure_getters: true,
-      unsafe: true,
-      unsafe_comps: true,
-      warnings: false,
-    },
-    output: {
-      ascii_only: true,
-    },
-  };
-
-  // console.log(bundle.imports); // an array of external dependencies
-  // console.log(bundle.exports); // an array of names exported by the entry point
-  // console.log(bundle.modules); // an array of module objects
-
-  const umd = await bundle.generate({
-    format: 'umd',
-    name: 'tvvm',
-    banner: banner.multibanner(),
-  });
-
-  const umdMinified = `${banner.onebanner()}\n${uglify.minify(umd.code, uglifyOption).code}`;
-
-  const common = await bundle.generate({
-    format: 'cjs',
-    name: 'tvvm',
-    banner: banner.multibanner(),
-  });
-  const commonMinified = `${banner.onebanner()}\n${uglify.minify(common.code, uglifyOption).code}`;
-
-  const es = await bundle.generate({
-    format: 'es',
-    name: 'tvvm',
-    banner: banner.multibanner(),
-  });
-
-  write('dist/tvvm.js', umd.code)
-    .then(() => write('dist/tvvm.min.js', umdMinified, true))
-    .then(() => write('dist/tvvm.common.js', common.code))
-    .then(() => write('dist/tvvm.common.min.js', commonMinified, true))
-    .then(() => write('dist/tvvm.esm.js', es.code));
+  if (Array.isArray(rollupOutputOptions)) {
+    rollupOutputOptions.forEach(async (option) => {
+      let { code } = await bundle.generate(option)
+      let minCode = `${banner.onebanner()}\n${uglify.minify(code, uglifyOpt).code}`
+      write(option.filename, code)
+        .then(() => {
+          if (option.minFilename) {
+            write(option.minFilename, minCode)
+          }
+        })
+    })
+  } else {
+    let { code } = await bundle.generate(rollupOutputOptions)
+    let minCode = `${banner.onebanner()}\n${uglify.minify(code, uglifyOpt).code}`
+    write(rollupOutputOptions.filename, code)
+      .then(() => {
+        if (rollupOutputOptions.minFilename) {
+          write(rollupOutputOptions.minFilename, minCode)
+        }
+      })
+  }
 }
 
-build();
+build(rollupInputOptions, rollupOutputOptions, uglifyOption)
 
-function write(dest, code, zip) {
+// write code to the disk and log each file size
+function write(dest, code) {
   return new Promise((resolve, reject) => {
-    function report(extra) {
-      console.log(`${(path.relative(process.cwd(), dest)).blue_bt} ${getSize(code).green_bt + (extra || '')}`);
-      resolve();
-    }
     if (!fs.existsSync(path.dirname(dest))) {
-      fs.mkdirSync(path.dirname(dest));
+      fs.mkdirSync(path.dirname(dest))
     }
-    fs.writeFile(dest, code, (err) => {
-      if (err) return reject(err);
-      if (zip) {
-        zlib.gzip(code, (_err, zipped) => {
-          if (_err) return reject(_err);
-          report(`(gzipped: ${getSize(zipped).green_bt})`);
-        });
+    fs.writeFile(dest, code, err => {
+      if (err) {
+        return reject(err)
       } else {
-        report();
+        log(`${path.relative(process.cwd(), dest)} ${getSize(code)}`)
+        resolve()
       }
-    });
-  });
+    })
+  })
 }
 
 function getSize(code) {
-  return `${(code.length / 1024).toFixed(2)}kb`;
+  return `${(code.length / 1024).toFixed(2)}kb`
 }
+
