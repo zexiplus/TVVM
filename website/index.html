@@ -6,14 +6,44 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>TVVM</title>
   <script src="../dist/tvvm.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+    .navbar {
+      height: 80px;
+      width: 100%;
+      background-color: aliceblue;
+      border-bottom: 1px solid #dcdcdc;
+      display: flex;
+    }
+    .footbar {
+      
+    }
+    .tv {
+      width: 600px;
+      height: 400px;
+      border: 1px solid aqua;
+    }
+  </style>
 </head>
 <body>
   <div id="app">
-    <input type="text" t-model="message">
-    <span>{{message}}</span>
+    <nav class="navbar">
+
+    </nav>
+    <div id="main-view"></div>
+    <div class="tv">
+
+    </div>
+    <footer class="footbar">
+
+    </footer>
   </div>
   <script>
-    new tvvm({
+    new TVVM({
       el: '#app',
       data: function () {
         return {

@@ -19,20 +19,20 @@ module.exports = {
       filename: 'dist/tvvm.js',
       minFilename: 'dist/tvvm.min.js',
       format: 'umd',
-      name: 'tvvm',
+      name: 'TVVM', // global value name
       banner: banner.multibanner()
     },
     { 
       filename: 'dist/tvvm.common.js',
       minFilename: 'dist/tvvm.common.min.js',
       format: 'cjs',
-      name: 'tvvm',
+      name: 'TVVM',
       banner: banner.multibanner()
     },
     {
       filename: 'dist/tvvm.esm.js',
       format: 'es',
-      name: 'tvvm',
+      name: 'TVVM',
       banner:　banner.multibanner()
     }
   ]

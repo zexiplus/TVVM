@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const rollup = require('rollup') 
-const uglify = require('uglify-js') // output like .min.js files
+const uglify = require('uglify-js') // minify files output like .min.js e.g
 const banner = require('bannerjs')
 const log = console.log
 

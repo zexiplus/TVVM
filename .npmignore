@@ -8,6 +8,7 @@ rollup.config.js
 yarn.lock
 src
 website
+config
 
 LICENSE
 coverage

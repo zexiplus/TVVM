@@ -1,5 +1,5 @@
 {
-  "name": "tvvm",
+  "name": "tvvm.js",
   "version": "1.0.0",
   "description": "轻量级TV端WEB应用开发框架",
   "main": "index.js",
