@@ -1,4 +1,9 @@
 import Watcher from './watcher'
+import compileUtil from './compileUtil'
+
+const privateDirectives = [
+  'is-t-for'
+]
 
 class Compiler {
     constructor(el, vm) {
@@ -49,17 +54,21 @@ class Compiler {
         let text = node.textContent
         if (reg.test(text)) {
             // 去掉{{}} 保留 value
-            let attrName = text.replace(reg, (...args) => {
+            if (node.parentElement.getAttribute('t-for') || node.parentElement.getAttribute('is-t-for')) {
+              
+            } else {
+              // 非t-for循环的替换逻辑
+              let attrName = text.replace(reg, (...args) => {
                 // 对每个{{}}之类的表达式增加增加一个watcher,参数为vm实例, expr表达式, 更新回调函数
                 new Watcher(this.vm, args[1], (value) => {
-                    // console.log('update???')
-                    compileUtil.updateText(value, node, this.vm)
+                  compileUtil.updateText(value, node, this.vm)
                 })
                 return args[1]
-            })
-            // 例如取出{{message}} 中的 message, 交给compileUtil.updateText 方法去查找vm.data的值并替换到节点
-            let textValue = this.splitData(attrName, this.vm.$data)
-            compileUtil.updateText(textValue, node, this.vm)
+              })
+              // 例如取出{{message}} 中的 message, 交给compileUtil.updateText 方法去查找vm.data的值并替换到节点
+              let textValue = this.splitData(attrName, this.vm.$data)
+              compileUtil.updateText(textValue, node, this.vm)
+            }
         }
     }
 
@@ -83,10 +92,14 @@ class Compiler {
             let value = this.splitData(expr, this.vm.$data)
             if (compileUtil[item]) {
                 compileUtil[item](value, node, this.vm, expr)
-            } else {
+            } else if (!this.isPrivateDirective(item)) {
                 console.warn(`can't find directive ${item}`)
             }
         })
+    }
+
+    isPrivateDirective(text) {
+      return privateDirectives.includes(text)
     }
 
     // 判断节点属性是否是指令
@@ -128,30 +141,5 @@ class Compiler {
     }
 }
 
-// 编译功能函数的集合单例
-const compileUtil = {
-    updateText(text, node, vm, expr) {
-        // console.log('compileUtil.updateText text is', text)
-        node && (node.textContent = text)
-    },
-    //  在绑定有t-model节点的input上绑定事件, expr为t-model的表达式例如 'message.name'
-    't-model': function (value, node, vm, expr) {
-        node && (node.value = value)
-        node.addEventListener('input', (e) => {
-            this.setVal(vm.$data, expr, e.target.value)
-        })
-    },
-    // 解析vm.data上的t-model绑定的值
-    setVal(obj, expr, value) {
-        let arr = expr.split('.')
-        arr.reduce((prev, next) => {
-            if (arr.indexOf(next) == arr.length - 1) {
-                prev[next] = value
-            } else {
-                return prev[next]
-            }
-        }, obj)
-    }
-}
 
 export default Compiler

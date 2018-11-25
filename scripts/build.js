@@ -3,10 +3,11 @@ const path = require('path')
 const rollup = require('rollup') 
 const uglify = require('uglify-js') // minify files output like .min.js e.g
 const banner = require('bannerjs')
+const chalk = require('chalk')
 const log = console.log
 
 // import rollup config
-const { rollupInputOptions, rollupOutputOptions } = require('../config/rollup.config')
+const { rollupInputOptions, rollupOutputOptions } = require('../config/rollup.config').buildConfig
 // import uglify-js config
 const uglifyOption = require('../config/uglify.config')
 
@@ -17,20 +18,20 @@ async function build(rollupInputOptions, rollupOutputOptions,  uglifyOpt) {
     rollupOutputOptions.forEach(async (option) => {
       let { code } = await bundle.generate(option)
       let minCode = `${banner.onebanner()}\n${uglify.minify(code, uglifyOpt).code}`
-      write(option.filename, code)
+      write(option.file, code)
         .then(() => {
-          if (option.minFilename) {
-            write(option.minFilename, minCode)
+          if (option.minFile) {
+            write(option.minFile, minCode)
           }
         })
     })
   } else {
     let { code } = await bundle.generate(rollupOutputOptions)
     let minCode = `${banner.onebanner()}\n${uglify.minify(code, uglifyOpt).code}`
-    write(rollupOutputOptions.filename, code)
+    write(rollupOutputOptions.file, code)
       .then(() => {
-        if (rollupOutputOptions.minFilename) {
-          write(rollupOutputOptions.minFilename, minCode)
+        if (rollupOutputOptions.minFile) {
+          write(rollupOutputOptions.minFile, minCode)
         }
       })
   }
@@ -48,7 +49,7 @@ function write(dest, code) {
       if (err) {
         return reject(err)
       } else {
-        log(`${path.relative(process.cwd(), dest)} ${getSize(code)}`)
+        log(chalk.yellow(`${path.relative(process.cwd(), dest)}`) + chalk.green(` ${getSize(code)}`))
         resolve()
       }
     })

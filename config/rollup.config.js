@@ -3,7 +3,7 @@ const babel = require('rollup-plugin-babel') // transform ES6/7 to ES5
 const nodeResolve = require('rollup-plugin-node-resolve') 
 const commonjs = require('rollup-plugin-commonjs') // handle commonjs module
 
-module.exports = {
+const buildConfig = {
   rollupInputOptions: {
     input: 'src/main.js',
     plugins: [
@@ -16,24 +16,31 @@ module.exports = {
   },
   rollupOutputOptions: [
     { 
-      filename: 'dist/tvvm.js',
-      minFilename: 'dist/tvvm.min.js',
+      file: 'dist/tvvm.js',
+      minFile: 'dist/tvvm.min.js',
       format: 'umd',
       name: 'TVVM', // global value name
       banner: banner.multibanner()
     },
     { 
-      filename: 'dist/tvvm.common.js',
-      minFilename: 'dist/tvvm.common.min.js',
+      file: 'dist/tvvm.common.js',
+      minFile: 'dist/tvvm.common.min.js',
       format: 'cjs',
       name: 'TVVM',
       banner: banner.multibanner()
     },
     {
-      filename: 'dist/tvvm.esm.js',
+      file: 'dist/tvvm.esm.js',
       format: 'es',
       name: 'TVVM',
       banner:　banner.multibanner()
     }
   ]
 }
+
+const watchConfig = {
+  ...buildConfig.rollupInputOptions,
+  output: buildConfig.rollupOutputOptions,
+}
+
+module.exports = { buildConfig, watchConfig }

@@ -1,13 +1,14 @@
 {
   "name": "tvvm.js",
   "version": "1.0.0",
-  "description": "轻量级TV端WEB应用开发框架",
+  "description": "A simple micro-library for agile building TV web app with no dependency",
   "main": "index.js",
   "module": "dist/tvvm.esm.js",
   "scripts": {
-    "test": "npm run lint && jest --coverage",
+    "test": "jest --env=node --coverage",
     "test:watch": "jest --watch",
-    "build": "node scripts/build.js"
+    "build": "node scripts/build.js",
+    "watch": "node scripts/watch.js"
   },
   "repository": {
     "type": "git",
@@ -16,10 +17,18 @@
   "keywords": [
     "TV",
     "tv",
-    "tvvm"
+    "tvvm",
+    "tvvm.js",
+    "television",
+    "TV web app",
+    ""
   ],
-  "author": "float",
+  "author": "float <zexiplus@outlook.com>",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zexiplus/TVM/issues"
+  },
+  "homepage": "https://github.com/zexiplus/TVM#readme",
   "dependencies": {},
   "devDependencies": {
     "autoprefixer": "^8.6.1",
@@ -29,6 +38,7 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "bannerjs": "^1.0.5",
+    "chalk": "^2.4.1",
     "classnames": "^2.2.5",
     "colors-cli": "^1.0.13",
     "eslint": "^4.19.1",
@@ -54,9 +64,5 @@
     "rollup-plugin-node-resolve": "^3.3.0",
     "uglify-js": "^3.4.0",
     "zlib": "^1.0.5"
-  },
-  "bugs": {
-    "url": "https://github.com/zexiplus/TVM/issues"
-  },
-  "homepage": "https://github.com/zexiplus/TVM#readme"
+  }
 }

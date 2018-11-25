@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,6 +13,7 @@
       padding: 0;
       border: 0;
     }
+
     .navbar {
       height: 80px;
       width: 100%;
@@ -19,9 +21,9 @@
       border-bottom: 1px solid #dcdcdc;
       display: flex;
     }
-    .footbar {
-      
-    }
+
+    .footbar {}
+
     .tv {
       width: 600px;
       height: 400px;
@@ -29,17 +31,15 @@
     }
   </style>
 </head>
+
 <body>
   <div id="app">
     <nav class="navbar">
 
     </nav>
-    <div id="main-view">
-      <div class="tv" t-if="tvDisplay">
-      </div>
-      <ul>
-        <li t-for="item in arr">{{item}}</li>
-      </ul>
+    <div id="main-view"></div>
+    <div class="tv">
+
     </div>
     <footer class="footbar">
 
@@ -50,17 +50,11 @@
       el: '#app',
       data: function () {
         return {
-          message: 'hello',
-          tvDisplay: true,
-          arr: [1,2,3,4]
-        }
-      },
-      methods: {
-        testFn: function () {
-          console.log('this.message is', this.message)
+          message: 'hello'
         }
       }
     })
   </script>
 </body>
+
 </html>

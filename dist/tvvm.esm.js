@@ -1,51 +1,25 @@
 /*!
- * tvvm v1.0.0
- * 轻量级TV端WEB应用开发框架
+ * tvvm.js v1.0.0
+ * A simple micro-library for agile building TV web app with no dependency
  * 
- * Copyright (c) 2018 float
+ * Copyright (c) 2018 float <zexiplus@outlook.com>
  * https://github.com/zexiplus/TVM#readme
  * 
  * Licensed under the MIT license.
  */
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-  return typeof obj;
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-};
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var classCallCheck = function (instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-};
-
-var createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];
-      descriptor.enumerable = descriptor.enumerable || false;
-      descriptor.configurable = true;
-      if ("value" in descriptor) descriptor.writable = true;
-      Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }
-
-  return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);
-    if (staticProps) defineProperties(Constructor, staticProps);
-    return Constructor;
-  };
-}();
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Dep = function () {
     function Dep() {
-        classCallCheck(this, Dep);
+        _classCallCheck(this, Dep);
 
         this.subs = [];
     }
 
-    createClass(Dep, [{
+    _createClass(Dep, [{
         key: "addSubs",
         value: function addSubs(watcher) {
             this.subs.push(watcher); // 添加订阅者
@@ -58,17 +32,24 @@ var Dep = function () {
             });
         }
     }]);
+
     return Dep;
 }();
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass$1 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck$1(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 var Observer = function () {
     function Observer(data) {
-        classCallCheck(this, Observer);
+        _classCallCheck$1(this, Observer);
 
         this.observer(data);
     }
 
-    createClass(Observer, [{
+    _createClass$1(Observer, [{
         key: 'observer',
         value: function observer(data) {
             var _this2 = this;
@@ -94,13 +75,13 @@ var Observer = function () {
             Object.defineProperty(obj, key, {
                 enumerable: true,
                 configurable: true,
-                get: function get$$1() {
+                get: function get() {
                     // 进行订阅, 在编译阶段， compiler会给template中的每个指令增加一个watcher， 在watcher取值时会设置自身为Dep.target
                     Dep.target && dep.addSubs(Dep.target);
 
                     return value;
                 },
-                set: function set$$1(newValue) {
+                set: function set(newValue) {
                     if (newValue !== obj[key]) {
                         // 对新值继续劫持
                         _this.observer(newValue);
@@ -113,12 +94,17 @@ var Observer = function () {
             });
         }
     }]);
+
     return Observer;
 }();
 
+var _createClass$2 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck$2(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 var Watcher = function () {
     function Watcher(vm, expr, cb) {
-        classCallCheck(this, Watcher);
+        _classCallCheck$2(this, Watcher);
 
         this.vm = vm;
         this.expr = expr;
@@ -127,7 +113,7 @@ var Watcher = function () {
         this.value = this.getValAndSetTarget();
     }
 
-    createClass(Watcher, [{
+    _createClass$2(Watcher, [{
         key: 'getValAndSetTarget',
         value: function getValAndSetTarget() {
             Dep.target = this;
@@ -153,12 +139,85 @@ var Watcher = function () {
             }
         }
     }]);
+
     return Watcher;
 }();
 
+// 编译功能函数
+
+var compileUtil = {
+  updateText: function updateText(text, node, vm, expr) {
+    // console.log('compileUtil.updateText text is', text)
+    node && (node.textContent = text);
+  },
+
+  //  在绑定有t-model节点的input上绑定事件, expr为t-model的表达式例如 'message.name'
+  't-model': function tModel(value, node, vm, expr) {
+    var _this = this;
+
+    node && (node.value = value);
+    node.addEventListener('input', function (e) {
+      _this.setVal(vm.$data, expr, e.target.value);
+    });
+  },
+  't-if': function tIf(value, node, vm, expr) {
+    var originalDisplay = window.getComputedStyle(node);
+    node && (node.style.display = value ? originalDisplay : 'none');
+  },
+  't-show': function tShow(value, node, vm, expr) {
+    var originalVisible = window.getComputedStyle(node);
+    node && (node.style.visibility = value ? originalVisible : 'hidden');
+  },
+  't-for': function tFor(value, node, vm, expr) {
+    // 截取 in 后的数组表达式
+    var sliceBegin = expr.indexOf('in') + 3;
+    var arrName = expr.slice(sliceBegin);
+    var arr = this.getVal(vm.$data, arrName);
+    var reg = /\{\{([^}]+)\}\}/g;
+    if (!Array.isArray(arr)) {
+      return console.warn('t-for value must be an array');
+    }
+    var parentElement = node.parentElement;
+    parentElement.removeChild(node);
+    var baseNode = node.cloneNode(true);
+    baseNode.removeAttribute('t-for');
+    baseNode.setAttribute('is-t-for', "true");
+    arr.forEach(function (item, index) {
+      var cloneNode = baseNode.cloneNode(true);
+      cloneNode.textContent && (cloneNode.textContent = cloneNode.textContent.replace(reg, item));
+      parentElement.appendChild(cloneNode);
+    });
+  },
+  // 解析vm.data上的t-model绑定的值
+  setVal: function setVal(obj, expr, value) {
+    var arr = expr.split('.');
+    arr.reduce(function (prev, next) {
+      if (arr.indexOf(next) == arr.length - 1) {
+        prev[next] = value;
+      } else {
+        return prev[next];
+      }
+    }, obj);
+  },
+
+  // 解析vm.$data 上的 例如 'member.id'属性
+  getVal: function getVal(obj, expr) {
+    var arr = expr.split('.');
+    return arr.reduce(function (prev, next) {
+      return prev[next];
+    }, obj);
+  }
+};
+
+var _createClass$3 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck$3(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var privateDirectives = ['is-t-for'];
+
 var Compiler = function () {
     function Compiler(el, vm) {
-        classCallCheck(this, Compiler);
+        _classCallCheck$3(this, Compiler);
 
         // 把dom节点挂载在Complier实例上
         this.el = this.getDOM(el);
@@ -187,7 +246,7 @@ var Compiler = function () {
     // 编译节点，如果子节点是node节点， 递归调用自身和compileNode， 如果不是 则调用 compileText
 
 
-    createClass(Compiler, [{
+    _createClass$3(Compiler, [{
         key: 'compile',
         value: function compile(parentNode) {
             var _this = this;
@@ -217,17 +276,19 @@ var Compiler = function () {
             var text = node.textContent;
             if (reg.test(text)) {
                 // 去掉{{}} 保留 value
-                var attrName = text.replace(reg, function () {
-                    // 对每个{{}}之类的表达式增加增加一个watcher,参数为vm实例, expr表达式, 更新回调函数
-                    new Watcher(_this2.vm, arguments.length <= 1 ? undefined : arguments[1], function (value) {
-                        // console.log('update???')
-                        compileUtil.updateText(value, node, _this2.vm);
+                if (node.parentElement.getAttribute('t-for') || node.parentElement.getAttribute('is-t-for')) {} else {
+                    // 非t-for循环的替换逻辑
+                    var attrName = text.replace(reg, function () {
+                        // 对每个{{}}之类的表达式增加增加一个watcher,参数为vm实例, expr表达式, 更新回调函数
+                        new Watcher(_this2.vm, arguments.length <= 1 ? undefined : arguments[1], function (value) {
+                            compileUtil.updateText(value, node, _this2.vm);
+                        });
+                        return arguments.length <= 1 ? undefined : arguments[1];
                     });
-                    return arguments.length <= 1 ? undefined : arguments[1];
-                });
-                // 例如取出{{message}} 中的 message, 交给compileUtil.updateText 方法去查找vm.data的值并替换到节点
-                var textValue = this.splitData(attrName, this.vm.$data);
-                compileUtil.updateText(textValue, node, this.vm);
+                    // 例如取出{{message}} 中的 message, 交给compileUtil.updateText 方法去查找vm.data的值并替换到节点
+                    var textValue = this.splitData(attrName, this.vm.$data);
+                    compileUtil.updateText(textValue, node, this.vm);
+                }
             }
         }
 
@@ -259,10 +320,15 @@ var Compiler = function () {
                 var value = _this3.splitData(expr, _this3.vm.$data);
                 if (compileUtil[item]) {
                     compileUtil[item](value, node, _this3.vm, expr);
-                } else {
+                } else if (!_this3.isPrivateDirective(item)) {
                     console.warn('can\'t find directive ' + item);
                 }
             });
+        }
+    }, {
+        key: 'isPrivateDirective',
+        value: function isPrivateDirective(text) {
+            return privateDirectives.includes(text);
         }
 
         // 判断节点属性是否是指令
@@ -316,50 +382,25 @@ var Compiler = function () {
             return fragment;
         }
     }]);
+
     return Compiler;
 }();
 
-// 编译功能函数的集合单例
+var _createClass$4 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-
-var compileUtil = {
-    updateText: function updateText(text, node, vm, expr) {
-        // console.log('compileUtil.updateText text is', text)
-        node && (node.textContent = text);
-    },
-
-    //  在绑定有t-model节点的input上绑定事件, expr为t-model的表达式例如 'message.name'
-    't-model': function tModel(value, node, vm, expr) {
-        var _this4 = this;
-
-        node && (node.value = value);
-        node.addEventListener('input', function (e) {
-            _this4.setVal(vm.$data, expr, e.target.value);
-        });
-    },
-    // 解析vm.data上的t-model绑定的值
-    setVal: function setVal(obj, expr, value) {
-        var arr = expr.split('.');
-        arr.reduce(function (prev, next) {
-            if (arr.indexOf(next) == arr.length - 1) {
-                prev[next] = value;
-            } else {
-                return prev[next];
-            }
-        }, obj);
-    }
-};
+function _classCallCheck$4(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var TVVM = function () {
     function TVVM(options) {
-        classCallCheck(this, TVVM);
+        _classCallCheck$4(this, TVVM);
 
         // 初始化参数， 把el， data等进行赋值与绑定
         this.$el = options.el;
         // data如果是函数就取返回值， 如果不是则直接赋值
         this.$data = typeof options.data === 'function' ? options.data() : options.data;
         // 数据代理, 把data对象属性代理到vm实例上
-        this.proxy(this.$data);
+        this.proxy(this.$data, this);
+        this.proxy(options.methods, this);
         // debugger
         // 把$el真实的dom节点编译成vdom, 并解析相关指令
         if (this.$el) {
@@ -371,25 +412,27 @@ var TVVM = function () {
     // 数据代理, 访问/设置 this.a 相当于访问设置 this.data.a
 
 
-    createClass(TVVM, [{
+    _createClass$4(TVVM, [{
         key: 'proxy',
-        value: function proxy(data) {
-            var _this = this;
-
+        value: function proxy(data, proxyTarget) {
             Object.keys(data).forEach(function (key) {
-                Object.defineProperty(_this, key, {
+                Object.defineProperty(proxyTarget, key, {
                     enumerable: true,
                     configurable: true,
-                    get: function get$$1() {
+                    get: function get() {
                         return data[key];
                     },
-                    set: function set$$1(newValue) {
+                    set: function set(newValue) {
+                        if (proxyTarget[key] !== undefined) {
+                            console.warn('key ' + key + ' has already in Target');
+                        }
                         data[key] = newValue;
                     }
                 });
             });
         }
     }]);
+
     return TVVM;
 }();
 

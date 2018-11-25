@@ -8,7 +8,8 @@ class TVVM {
         // data如果是函数就取返回值， 如果不是则直接赋值
         this.$data = typeof options.data === 'function' ? options.data() : options.data
         // 数据代理, 把data对象属性代理到vm实例上
-        this.proxy(this.$data)
+        this.proxy(this.$data, this)
+        this.proxy(options.methods, this)
         // debugger
         // 把$el真实的dom节点编译成vdom, 并解析相关指令
         if (this.$el) {
@@ -18,16 +19,19 @@ class TVVM {
         }
     }
     // 数据代理, 访问/设置 this.a 相当于访问设置 this.data.a
-    proxy(data) {
+    proxy(data, proxyTarget) {
         Object.keys(data).forEach(key => {
-            Object.defineProperty(this, key, {
+            Object.defineProperty(proxyTarget, key, {
                 enumerable: true,
                 configurable: true,
                 get() {
                     return data[key]
                 },
                 set(newValue) {
-                    data[key] = newValue
+                  if (proxyTarget[key] !== undefined) {
+                    console.warn(`key ${key} has already in Target`)
+                  }
+                  data[key] = newValue
                 }
             })
         })
