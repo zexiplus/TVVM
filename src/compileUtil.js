@@ -24,6 +24,7 @@ const compileUtil = {
       // 截取 in 后的数组表达式
       const sliceBegin = expr.indexOf('in') + 3
       const arrName = expr.slice(sliceBegin)
+      const itemName = expr.slice(0, sliceBegin - 4)
       const arr = this.getVal(vm.$data, arrName)
       const reg = /\{\{([^}]+)\}\}/g
       if (!Array.isArray(arr)) {
@@ -32,14 +33,24 @@ const compileUtil = {
       const parentElement = node.parentElement
       parentElement.removeChild(node)
       const baseNode = node.cloneNode(true)
+      baseNode.setAttribute('t-scope', arrName)
+      baseNode.setAttribute('t-itemname', itemName)
       baseNode.removeAttribute('t-for')
+      baseNode.setAttribute('t-index', 0)
       baseNode.setAttribute('is-t-for', "true")
       arr.forEach((item, index) => {
         let cloneNode = baseNode.cloneNode(true)
-        cloneNode.textContent && (cloneNode.textContent = cloneNode.textContent.replace(reg, item))
+        cloneNode.setAttribute('t-index', index)
+        if (cloneNode.textContent) {
+          let match = cloneNode.textContent.match(/\{\{([^}]+)\}\}/)[1]
+          let execFn = new Function('item', `return ${match}`)
+          let result = execFn(item)
+          cloneNode.textContent = cloneNode.textContent.replace(reg, result)
+        }
         parentElement.appendChild(cloneNode)
       })
     },
+    
     // 解析vm.data上的t-model绑定的值
     setVal(obj, expr, value) {
       let arr = expr.split('.')

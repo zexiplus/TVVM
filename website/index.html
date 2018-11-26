@@ -35,10 +35,10 @@
 
     </nav>
     <div id="main-view">
-      <div class="tv" t-if="tvDisplay">
+      <div class="tv" t-if="tvDisplay" @click="testFn(message, name)">
       </div>
       <ul>
-        <li t-for="item in arr">{{item}}</li>
+        <li @click="testFn(item, message)" t-for="item in arr">{{item + 1}}</li>
       </ul>
     </div>
     <footer class="footbar">
@@ -51,13 +51,14 @@
       data: function () {
         return {
           message: 'hello',
+          name: 'test',
           tvDisplay: true,
           arr: [1,2,3,4]
         }
       },
       methods: {
-        testFn: function () {
-          console.log('this.message is', this.message)
+        testFn: function (a, b) {
+          console.log('click num is', a, b)
         }
       }
     })
