@@ -5,43 +5,50 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>TVVM</title>
+  <link rel="stylesheet" href="./style/common.css">
   <script src="../dist/tvvm.js"></script>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      border: 0;
-    }
-    .navbar {
-      height: 80px;
-      width: 100%;
-      background-color: aliceblue;
-      border-bottom: 1px solid #dcdcdc;
-      display: flex;
-    }
-    .footbar {
-      
+    /* 宽屏幕设备样式 */
+    @media only screen and (min-width: 600px) {
+      .tv {
+        width: 600px !important;
+        height: 400px !important;
+      }
     }
     .tv {
-      width: 600px;
-      height: 400px;
-      border: 1px solid aqua;
+      width: 400px;
+      height: 260px;
+      border: 7px solid #777;
+      border-bottom: 15px solid #777;
+      border-radius: 5px;
+      margin: 50px auto;
     }
+
   </style>
 </head>
 <body>
   <div id="app">
     <nav class="navbar">
-
-    </nav>
-    <div id="main-view">
-      <div class="tv" t-if="tvDisplay" @click="testFn(message, name)">
+      <div class="logo"></div>
+      <div class="link-list">
+        <a style="font-weight: bold;" href="Home">Home</a>
+        <span>/</span>
+        <a href="./pages/doc.html">Doc</a>
+        <span>/</span>
+        <a href="https://github.com/zexiplus/TVVM">Github</a>
       </div>
-      <ul>
-        <li @click="testFn(item, message)" t-for="item in arr">{{item + 1}}</li>
-      </ul>
-      <input t-model="input.value" />
-      <span>{{input.value}}</span>
+    </nav>
+    <div class="container">
+      <div class="tv">
+
+      </div>
+      <div t-if="testDisplay" class="test-tvvm">
+        <ul>
+          <li @click="testFn(item, message)" t-for="item in arr">{{item + 1}}</li>
+        </ul>
+        <input t-model="input.value" />
+        <span>{{input.value}}</span>
+      </div>
     </div>
     <footer class="footbar">
 
@@ -71,6 +78,7 @@
           message: 'hello',
           name: 'test',
           tvDisplay: true,
+          testDisplay: false,
           arr: [1,2,3,4]
         }
       },

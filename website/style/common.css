@@ -1,0 +1,38 @@
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+a {
+  text-decoration: none;
+  color: #666;
+  font-weight: 50;
+}
+a:active {
+  font-weight: bold;
+}
+
+.navbar {
+  height: 60px;
+  width: 100%;
+  background-color: #f9f9f9;
+  border-bottom: 1px solid #dcdcdc;
+  display: flex;
+}
+.logo {
+  background-image: url(../imgs/logo.png);
+  background-size: 100% 100%;
+  cursor: pointer;
+  width: 80px;
+  height: 60px;
+  margin-left: 30px;
+}
+.link-list {
+  margin-left: auto;
+  margin-right: 50px;
+  line-height: 60px;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+}
