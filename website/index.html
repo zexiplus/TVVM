@@ -40,6 +40,8 @@
       <ul>
         <li @click="testFn(item, message)" t-for="item in arr">{{item + 1}}</li>
       </ul>
+      <input t-model="input.value" />
+      <span>{{input.value}}</span>
     </div>
     <footer class="footbar">
 
@@ -48,8 +50,24 @@
   <script>
     new TVVM({
       el: '#app',
+      beforeCreate: function () {
+        console.log('this.message', this.message)
+      },
+      created: function () {
+        console.log('this.message', this.message)
+      },
+      beforeMount: function () {
+        console.log('this.$el', this.$el)
+      },
+      mounted: function () {
+        console.log('this.$el', this.$el)
+      },
+
       data: function () {
         return {
+          input: {
+            value: '2341234'
+          },
           message: 'hello',
           name: 'test',
           tvDisplay: true,

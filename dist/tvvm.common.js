@@ -78,7 +78,7 @@ var Observer = function () {
         enumerable: true,
         configurable: true,
         get: function get() {
-          // 进行订阅, 在编译阶段， compiler会给template中的每个指令增加一个watcher， 在watcher取值时会设置自身为Dep.target
+          // 依赖收集 进行订阅, 在编译阶段， compiler会给template中的每个指令增加一个watcher， Dep.target 为一个watcher
           Dep.target && dep.addSubs(Dep.target);
 
           return value;
@@ -91,6 +91,7 @@ var Observer = function () {
             value = newValue;
             // 发布通知
             dep.notify();
+            // update
           }
         }
       });
@@ -256,6 +257,7 @@ var Compiler = function () {
       // 没有找到el根节点给出警告
       console.error("can not find element named " + el);
     }
+    this.vm.$el = this.el;
   }
 
   // 编译节点，如果子节点是node节点， 递归调用自身和compileNode， 如果不是 则调用 compileText
@@ -453,30 +455,95 @@ var _createClass$4 = function () { function defineProperties(target, props) { fo
 
 function _classCallCheck$4(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var Lifecycle = function () {
+  function Lifecycle(options, vm) {
+    _classCallCheck$4(this, Lifecycle);
+
+    this.hooks = {};
+    this.init(options, vm);
+    vm.lifecycle = this;
+    vm.callHook = this.callHook.bind(this);
+  }
+
+  _createClass$4(Lifecycle, [{
+    key: 'init',
+    value: function init(options, vm) {
+      var beforeCreate = options.beforeCreate,
+          created = options.created,
+          beforeMount = options.beforeMount,
+          mounted = options.mounted,
+          beforeUpdate = options.beforeUpdate,
+          updated = options.updated,
+          beforeDestory = options.beforeDestory,
+          destoried = options.destoried;
+
+      var hooks = { beforeCreate: beforeCreate, created: created, beforeMount: beforeMount, mounted: mounted, beforeUpdate: beforeUpdate, updated: updated, beforeDestory: beforeDestory, destoried: destoried };
+      Object.keys(hooks).forEach(function (key, index) {
+        if (hooks[key] === undefined) {
+          hooks[key] = emptyFn;
+        }
+        if (hooks[key] instanceof Function) {
+          hooks[key] = hooks[key].bind(vm);
+        } else {
+          console.warn('lifecycle hooks must be a function');
+          hooks[key] = emptyFn;
+        }
+      });
+      this.hooks = hooks;
+    }
+  }, {
+    key: 'callHook',
+    value: function callHook(fnName) {
+      // fnName in this.hooks && this.hooks[fnName]()
+      this.hooks[fnName]();
+    }
+  }]);
+
+  return Lifecycle;
+}();
+
+function emptyFn() {
+  return;
+}
+
+var _createClass$5 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck$5(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 var TVVM = function () {
   function TVVM(options) {
-    _classCallCheck$4(this, TVVM);
+    _classCallCheck$5(this, TVVM);
 
     // 初始化参数， 把el， data等进行赋值与绑定
-    this.$el = options.el;
     // data如果是函数就取返回值， 如果不是则直接赋值
+    // 初始化生命周期对象
+    new Lifecycle(options, this);
+    // beforeCreate
+    this.callHook('beforeCreate');
+
     this.$data = typeof options.data === "function" ? options.data() : options.data;
     this.methods = options.methods;
     // 数据代理, 把data对象属性代理到vm实例上
     this.proxy(this.$data, this);
     this.proxy(options.methods, this);
-    // debugger
+
     // 把$el真实的dom节点编译成vdom, 并解析相关指令
-    if (this.$el) {
+    if (options.el) {
       // 数据劫持,
       new Observer(this.$data);
-      new Compiler(this.$el, this);
+      // created
+      this.callHook('created');
+      // beforeMounte
+      this.callHook('beforeMount');
+      new Compiler(options.el, this);
+      // mounted 此时可以访问 this.$el
+      this.callHook('mounted');
     }
   }
   // 数据代理, 访问/设置 this.a 相当于访问设置 this.data.a
 
 
-  _createClass$4(TVVM, [{
+  _createClass$5(TVVM, [{
     key: "proxy",
     value: function proxy(data, proxyTarget) {
       Object.keys(data).forEach(function (key) {

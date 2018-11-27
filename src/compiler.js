@@ -27,6 +27,7 @@ class Compiler {
       // 没有找到el根节点给出警告
       console.error(`can not find element named ${el}`);
     }
+    this.vm.$el = this.el
   }
 
   // 编译节点，如果子节点是node节点， 递归调用自身和compileNode， 如果不是 则调用 compileText

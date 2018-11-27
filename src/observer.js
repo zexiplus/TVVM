@@ -25,7 +25,7 @@ class Observer {
       enumerable: true,
       configurable: true,
       get() {
-        // 进行订阅, 在编译阶段， compiler会给template中的每个指令增加一个watcher， 在watcher取值时会设置自身为Dep.target
+        // 依赖收集 进行订阅, 在编译阶段， compiler会给template中的每个指令增加一个watcher， Dep.target 为一个watcher
         Dep.target && dep.addSubs(Dep.target);
 
         return value;
@@ -38,6 +38,7 @@ class Observer {
           value = newValue;
           // 发布通知
           dep.notify();
+          // update
         }
       }
     });
