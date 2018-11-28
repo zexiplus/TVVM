@@ -330,8 +330,10 @@ var Compiler = function () {
       var _this3 = this;
 
       var attrs = node.getAttributeNames();
-      // 把已t-指令存到一个数组中
-      var directiveAttrs = attrs.filter(this.isDirective);
+      // 把t-指令(不包括t-focus)属性存到一个数组中
+      var directiveAttrs = attrs.filter(function (attrname) {
+        return _this3.isDirective(attrname) && !_this3.isTFocus(attrname);
+      });
       directiveAttrs.forEach(function (item) {
         var expr = node.getAttribute(item); // 属性值
         var value = _this3.splitData(expr, _this3.vm.$data);
@@ -341,6 +343,12 @@ var Compiler = function () {
           console.warn("can't find directive " + item);
         }
       });
+
+      // 焦点记录逻辑
+      if (attrs.includes('t-focus')) {
+        var focusIndex = node.getAttribute('t-focus');
+        this.vm.focuser.addFocusMap(focusIndex, node);
+      }
 
       // @event 事件绑定逻辑
       var eventBindAttrs = attrs.filter(this.isEventBinding);
@@ -399,12 +407,20 @@ var Compiler = function () {
       return reg.test(text);
     }
 
-    // 判断节点属性是否是指令
+    // 判断节点属性是否是t指令
 
   }, {
     key: "isDirective",
     value: function isDirective(text) {
       return text.includes("t-");
+    }
+
+    // 判断是否是t-focus
+
+  }, {
+    key: "isTFocus",
+    value: function isTFocus(text) {
+      return text === 't-focus';
     }
 
     // 根据传入的值， 如果是dom节点直接返回， 如果是选择器， 则返回相应的dom节点
@@ -455,9 +471,197 @@ var _createClass$4 = function () { function defineProperties(target, props) { fo
 
 function _classCallCheck$4(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var Focuser = function () {
+  function Focuser(vm, options) {
+    _classCallCheck$4(this, Focuser);
+
+    this.init(vm, options);
+    this.bindKeyEvent();
+  }
+
+  _createClass$4(Focuser, [{
+    key: 'init',
+    value: function init(vm, options) {
+      // 存放indexString索引的node节点
+      this.focusMap = {};
+      // 存放原始focus相关参数
+      this.focusOptions = options.focus;
+      var currentRowIndex = void 0,
+          currentColIndex = void 0;
+      if (this.focusOptions && this.focusOptions.defaultFocusIndex) {
+        var IndexArr = options.focus && options.focus.defaultFocusIndex.split('-');
+        currentRowIndex = Number(IndexArr[0]);
+        currentColIndex = Number(IndexArr[1]);
+      }
+      // 存放当前状态信息
+      this.focusState = {
+        currentIndexString: options.focus && options.focus.defaultFocusIndex || '',
+        currentRowIndex: currentRowIndex,
+        currentColIndex: currentColIndex
+
+        // 合并键盘绑定键值码
+      };if (this.focusOptions.keysMergeOptions.coverage) {
+        this.keysMap = this.focusOptions.keysMap;
+      } else {
+        this.keysMap = {
+          'up': [38],
+          'down': [40],
+          'left': [37],
+          'right': [39],
+          'enter': [13, 32],
+          'return': [27]
+        };
+      }
+
+      vm.focuser = this;
+      this.vm = vm;
+    }
+  }, {
+    key: 'bindKeyEvent',
+    value: function bindKeyEvent() {
+      var _this = this;
+
+      window.addEventListener('keydown', function (event) {
+        console.log(event.keyCode);
+        switch (event.keyCode) {
+          case 37:
+            _this.move('left');
+            break;
+          case 38:
+            _this.move('up');
+            break;
+          case 39:
+            _this.move('right');
+            break;
+          case 40:
+            _this.move('down');
+            break;
+        }
+      });
+    }
+  }, {
+    key: 'addFocusMap',
+    value: function addFocusMap(key, node) {
+      var _this2 = this;
+
+      var keys = key.split(/,\s*/);
+      keys.forEach(function (item) {
+        if (item in _this2.focusMap) {
+          return console.warn('t-focus should be unique in one TVVM page but t-focus=' + item + ' has already exist');
+        }
+        _this2.focusMap[item] = node;
+      });
+    }
+    // 设置焦点dom
+
+  }, {
+    key: 'setFocus',
+    value: function setFocus(index) {
+      if (index in this.focusMap) {
+        var arr = index.split('-');
+        var currentRowIndex = Number(arr[0]);
+        var currentColIndex = Number(arr[1]);
+        this.focusMap[index].focus();
+        this.focusState.currentIndexString = index;
+        this.focusState.currentRowIndex = currentRowIndex;
+        this.focusState.currentColIndex = currentColIndex;
+      } else {
+        console.warn('can\'t find t-focus ' + index + ' node');
+      }
+    }
+  }, {
+    key: 'isBoundary',
+    value: function isBoundary() {}
+  }, {
+    key: 'isTopBoundary',
+    value: function isTopBoundary() {
+      return this.focusState.currentRowIndex === 0;
+    }
+  }, {
+    key: 'isLeftBoundary',
+    value: function isLeftBoundary() {
+      return this.focusState.currentColIndex === 0;
+    }
+  }, {
+    key: 'isRightBoundary',
+    value: function isRightBoundary() {}
+  }, {
+    key: 'isBottomBoundary',
+    value: function isBottomBoundary() {}
+  }, {
+    key: 'moveUp',
+    value: function moveUp() {
+      if (this.isTopBoundary()) {
+        // donothing
+      } else {
+        var rowIndex = this.focusState.currentRowIndex - 1;
+        var colIndex = this.focusState.currentColIndex;
+        var indexString = [rowIndex, colIndex].join('-');
+        this.setFocus(indexString);
+      }
+    }
+  }, {
+    key: 'moveDown',
+    value: function moveDown() {
+      if (this.isBottomBoundary()) {
+        // donothing
+      } else {
+        var rowIndex = this.focusState.currentRowIndex + 1;
+        var colIndex = this.focusState.currentColIndex;
+        var indexString = [rowIndex, colIndex].join('-');
+        this.setFocus(indexString);
+      }
+    }
+  }, {
+    key: 'moveLeft',
+    value: function moveLeft() {
+      if (this.isLeftBoundary()) {
+        // donothing
+      } else {
+        var rowIndex = this.focusState.currentRowIndex;
+        var colIndex = this.focusState.currentColIndex - 1;
+        var indexString = [rowIndex, colIndex].join('-');
+        this.setFocus(indexString);
+      }
+    }
+  }, {
+    key: 'moveRight',
+    value: function moveRight() {
+      if (this.isRightBoundary()) {
+        // donothing
+      } else {
+        var rowIndex = this.focusState.currentRowIndex;
+        var colIndex = this.focusState.currentColIndex + 1;
+        var indexString = [rowIndex, colIndex].join('-');
+        this.setFocus(indexString);
+      }
+    }
+
+    // 键盘上下左右触发函数 参数 按键方向， 原焦点索引字符串，焦点可循环标志位 
+
+  }, {
+    key: 'move',
+    value: function move(direction, baseIndex, circle) {
+      var directionMap = {
+        'up': this.moveUp,
+        'down': this.moveDown,
+        'left': this.moveLeft,
+        'right': this.moveRight
+      };
+      directionMap[direction].call(this);
+    }
+  }]);
+
+  return Focuser;
+}();
+
+var _createClass$5 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck$5(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 var Lifecycle = function () {
   function Lifecycle(options, vm) {
-    _classCallCheck$4(this, Lifecycle);
+    _classCallCheck$5(this, Lifecycle);
 
     this.hooks = {};
     this.init(options, vm);
@@ -465,7 +669,7 @@ var Lifecycle = function () {
     vm.callHook = this.callHook.bind(this);
   }
 
-  _createClass$4(Lifecycle, [{
+  _createClass$5(Lifecycle, [{
     key: 'init',
     value: function init(options, vm) {
       var beforeCreate = options.beforeCreate,
@@ -506,16 +710,18 @@ function emptyFn() {
   return;
 }
 
-var _createClass$5 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass$6 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _classCallCheck$5(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _classCallCheck$6(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var TVVM = function () {
   function TVVM(options) {
-    _classCallCheck$5(this, TVVM);
+    _classCallCheck$6(this, TVVM);
 
     // 初始化参数， 把el， data等进行赋值与绑定
     // data如果是函数就取返回值， 如果不是则直接赋值
+    // 初始化焦点管理对象
+    new Focuser(this, options);
     // 初始化生命周期对象
     new Lifecycle(options, this);
     // beforeCreate
@@ -543,8 +749,8 @@ var TVVM = function () {
   // 数据代理, 访问/设置 this.a 相当于访问设置 this.data.a
 
 
-  _createClass$5(TVVM, [{
-    key: "proxy",
+  _createClass$6(TVVM, [{
+    key: 'proxy',
     value: function proxy(data, proxyTarget) {
       Object.keys(data).forEach(function (key) {
         Object.defineProperty(proxyTarget, key, {
@@ -555,7 +761,7 @@ var TVVM = function () {
           },
           set: function set(newValue) {
             if (proxyTarget[key] !== undefined) {
-              console.warn("key " + key + " has already in Target");
+              console.warn('key ' + key + ' has already in Target');
             }
             data[key] = newValue;
           }

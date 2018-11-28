@@ -1,11 +1,14 @@
-import Observer from "./observer";
-import Compiler from "./compiler";
+import Observer from './observer'
+import Compiler from './compiler'
+import Focuser from './focuser'
 import Lifecycle from './lifycycle'
 
 class TVVM {
   constructor(options) {
     // 初始化参数， 把el， data等进行赋值与绑定
     // data如果是函数就取返回值， 如果不是则直接赋值
+    // 初始化焦点管理对象
+    new Focuser(this, options)
     // 初始化生命周期对象
     new Lifecycle(options, this)
     // beforeCreate

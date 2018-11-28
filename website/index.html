@@ -6,24 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>TVVM</title>
   <link rel="stylesheet" href="./style/common.css">
+  <link rel="stylesheet" href="./style/iconfont.css">
+  <link rel="stylesheet" href="./style/tv.css">
   <script src="../dist/tvvm.js"></script>
   <style>
-    /* 宽屏幕设备样式 */
-    @media only screen and (min-width: 600px) {
-      .tv {
-        width: 600px !important;
-        height: 400px !important;
-      }
-    }
-    .tv {
-      width: 400px;
-      height: 260px;
-      border: 7px solid #777;
-      border-bottom: 15px solid #777;
-      border-radius: 5px;
-      margin: 50px auto;
-    }
-
+    
   </style>
 </head>
 <body>
@@ -40,14 +27,31 @@
     </nav>
     <div class="container">
       <div class="tv">
-
-      </div>
-      <div t-if="testDisplay" class="test-tvvm">
-        <ul>
-          <li @click="testFn(item, message)" t-for="item in arr">{{item + 1}}</li>
-        </ul>
-        <input t-model="input.value" />
-        <span>{{input.value}}</span>
+        <div class="header-block">
+          <div class="user-info">{{userinfo.name}}</div>
+          <div class="status-right">
+            <div class="circle net-status">
+              <i class="iconfont icon-wifi1"></i>
+            </div>
+            <div class="circle sys-message">
+              <i class="iconfont icon-duihuaxinxi"></i>
+            </div>
+            <div class="circle sys-setting">
+              <i class="iconfont icon-shezhi1"></i>
+            </div>
+          </div>
+        </div>
+        <div class="block-container">
+          <div class="block block1" t-focus="0-0, 1-0" tabindex="1"></div>
+          <div class="block2">
+            <div class="block block2-1" t-focus="0-1, 0-2, 0-3" tabindex="2"></div>
+            <div class="block2-2">
+              <div class="block block2-2-1" t-focus="1-1" tabindex="3"></div>
+              <div class="block block2-2-2" t-focus="1-2" tabindex="4"></div>
+              <div class="block block2-2-3" t-focus="1-3" tabindex="5"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <footer class="footbar">
@@ -57,30 +61,30 @@
   <script>
     new TVVM({
       el: '#app',
-      beforeCreate: function () {
-        console.log('this.message', this.message)
-      },
-      created: function () {
-        console.log('this.message', this.message)
-      },
-      beforeMount: function () {
-        console.log('this.$el', this.$el)
-      },
-      mounted: function () {
-        console.log('this.$el', this.$el)
-      },
-
       data: function () {
         return {
-          input: {
-            value: '2341234'
-          },
-          message: 'hello',
-          name: 'test',
-          tvDisplay: true,
-          testDisplay: false,
-          arr: [1,2,3,4]
+          userinfo: {
+            name: 'Float'
+          }
         }
+      },
+      focus: {
+        defaultFocusIndex: '0-0',
+        keysMap: {
+          'up': [38, 104],
+          'down': [40, 98],
+          'left': [37, 100],
+          'right': [39, 102],
+          'enter': [13, 32],
+          'return': [27]
+        },
+        keysMergeOptions: {
+          coverage: true
+        },
+        circle: {
+          horizontal: true,
+          vertical: false,
+        },
       },
       methods: {
         testFn: function (a, b) {

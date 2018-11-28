@@ -3,6 +3,17 @@
   padding: 0;
   border: 0;
 }
+
+html {
+  font-size: 12px;
+}
+
+@media only screen and (min-width: 600px) {
+  html {
+    font-size: 16px !important;
+  }
+}
+
 a {
   text-decoration: none;
   color: #666;
@@ -15,9 +26,10 @@ a:active {
 .navbar {
   height: 60px;
   width: 100%;
-  background-color: #f9f9f9;
-  border-bottom: 1px solid #dcdcdc;
+  border-bottom: 1px solid #ebebeb;
+  background-color: rgba(255,255,255,0.9);
   display: flex;
+  justify-content: space-between;
 }
 .logo {
   background-image: url(../imgs/logo.png);
@@ -28,11 +40,11 @@ a:active {
   margin-left: 30px;
 }
 .link-list {
-  margin-left: auto;
   margin-right: 50px;
   line-height: 60px;
 }
 .container {
   display: flex;
   flex-direction: column;
+  background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
 }

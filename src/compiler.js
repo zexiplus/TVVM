@@ -85,8 +85,10 @@ class Compiler {
   // 编译node节点
   compileNode(node) {
     let attrs = node.getAttributeNames();
-    // 把已t-指令存到一个数组中
-    let directiveAttrs = attrs.filter(this.isDirective);
+    // 把t-指令(不包括t-focus)属性存到一个数组中
+    let directiveAttrs = attrs.filter((attrname) => {
+      return this.isDirective(attrname) && !this.isTFocus(attrname)
+    });
     directiveAttrs.forEach(item => {
       let expr = node.getAttribute(item); // 属性值
       let value = this.splitData(expr, this.vm.$data);
@@ -96,6 +98,12 @@ class Compiler {
         console.warn(`can't find directive ${item}`);
       }
     });
+
+    // 焦点记录逻辑
+    if (attrs.includes('t-focus')) {
+      let focusIndex = node.getAttribute('t-focus')
+      this.vm.focuser.addFocusMap(focusIndex, node)
+    }
 
     // @event 事件绑定逻辑
     let eventBindAttrs = attrs.filter(this.isEventBinding);
@@ -146,9 +154,14 @@ class Compiler {
     return reg.test(text);
   }
 
-  // 判断节点属性是否是指令
+  // 判断节点属性是否是t指令
   isDirective(text) {
     return text.includes("t-");
+  }
+
+  // 判断是否是t-focus
+  isTFocus(text) {
+    return text === 't-focus'
   }
 
   // 根据传入的值， 如果是dom节点直接返回， 如果是选择器， 则返回相应的dom节点
