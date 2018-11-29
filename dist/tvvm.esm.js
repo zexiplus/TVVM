@@ -8,18 +8,54 @@
  * Licensed under the MIT license.
  */
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+  return typeof obj;
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+};
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var classCallCheck = function (instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+};
+
+var createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }
+
+  return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) defineProperties(Constructor, staticProps);
+    return Constructor;
+  };
+}();
+
+var toConsumableArray = function (arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+    return arr2;
+  } else {
+    return Array.from(arr);
+  }
+};
 
 var Dep = function () {
   function Dep() {
-    _classCallCheck(this, Dep);
+    classCallCheck(this, Dep);
 
     this.subs = [];
   }
 
-  _createClass(Dep, [{
+  createClass(Dep, [{
     key: "addSubs",
     value: function addSubs(watcher) {
       this.subs.push(watcher); // 添加订阅者
@@ -32,24 +68,17 @@ var Dep = function () {
       });
     }
   }]);
-
   return Dep;
 }();
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass$1 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck$1(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
 var Observer = function () {
   function Observer(data) {
-    _classCallCheck$1(this, Observer);
+    classCallCheck(this, Observer);
 
     this.observer(data);
   }
 
-  _createClass$1(Observer, [{
+  createClass(Observer, [{
     key: "observer",
     value: function observer(data) {
       var _this2 = this;
@@ -75,13 +104,13 @@ var Observer = function () {
       Object.defineProperty(obj, key, {
         enumerable: true,
         configurable: true,
-        get: function get() {
+        get: function get$$1() {
           // 依赖收集 进行订阅, 在编译阶段， compiler会给template中的每个指令增加一个watcher， Dep.target 为一个watcher
           Dep.target && dep.addSubs(Dep.target);
 
           return value;
         },
-        set: function set(newValue) {
+        set: function set$$1(newValue) {
           if (newValue !== obj[key]) {
             // 对新值继续劫持
             _this.observer(newValue);
@@ -95,17 +124,12 @@ var Observer = function () {
       });
     }
   }]);
-
   return Observer;
 }();
 
-var _createClass$2 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck$2(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
 var Watcher = function () {
   function Watcher(vm, expr, cb) {
-    _classCallCheck$2(this, Watcher);
+    classCallCheck(this, Watcher);
 
     this.vm = vm;
     this.expr = expr;
@@ -114,7 +138,7 @@ var Watcher = function () {
     this.value = this.getValAndSetTarget();
   }
 
-  _createClass$2(Watcher, [{
+  createClass(Watcher, [{
     key: "getValAndSetTarget",
     value: function getValAndSetTarget() {
       Dep.target = this;
@@ -140,7 +164,6 @@ var Watcher = function () {
       }
     }
   }]);
-
   return Watcher;
 }();
 
@@ -221,17 +244,11 @@ var compileUtil = {
   }
 };
 
-var _createClass$3 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-function _classCallCheck$3(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
 var privateDirectives = ['is-t-for', 't-index', 't-scope', 't-itemname'];
 
 var Compiler = function () {
   function Compiler(el, vm) {
-    _classCallCheck$3(this, Compiler);
+    classCallCheck(this, Compiler);
 
     // 把dom节点挂载在Complier实例上
     this.el = this.getDOM(el);
@@ -261,7 +278,7 @@ var Compiler = function () {
   // 编译节点，如果子节点是node节点， 递归调用自身和compileNode， 如果不是 则调用 compileText
 
 
-  _createClass$3(Compiler, [{
+  createClass(Compiler, [{
     key: "compile",
     value: function compile(parentNode) {
       var _this = this;
@@ -382,7 +399,7 @@ var Compiler = function () {
             var params = expr.match(reg)[1].split(',').map(function (item) {
               return _this3.splitData(item.trim(), _this3.vm.$data);
             });
-            node.addEventListener(eventName, fn.bind.apply(fn, [_this3.vm].concat(_toConsumableArray(params))));
+            node.addEventListener(eventName, fn.bind.apply(fn, [_this3.vm].concat(toConsumableArray(params))));
           } else {
             // fn不含参数
             node.addEventListener(eventName, fn.bind(_this3.vm));
@@ -461,29 +478,79 @@ var Compiler = function () {
       return fragment;
     }
   }]);
-
   return Compiler;
 }();
 
-var _createClass$4 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck$4(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var defaultFocusOptions = {
+  circle: {
+    horizontal: false,
+    vertical: false
+  },
+  keysMap: {
+    'up': [38],
+    'down': [40],
+    'left': [37],
+    'right': [39],
+    'enter': [13],
+    'space': [32],
+    'home': [36],
+    'menu': [18],
+    'return': [27],
+    'addVolume': [175],
+    'subVolume': [174]
+  },
+  moveUpHandler: function moveUpHandler(event, node, index) {
+    console.log(node, index);
+  },
+  moveDownHandler: function moveDownHandler(event, node, index) {
+    console.log(node, index);
+  },
+  moveLeftHandler: function moveLeftHandler(event, node, index) {
+    console.log(node, index);
+  },
+  moveRightHandler: function moveRightHandler(event, node, index) {
+    console.log(node, index);
+  },
+  enterHandler: function enterHandler(event, node, index) {
+    console.log(node, index);
+  },
+  spaceHandler: function spaceHandler(event, node, index) {
+    console.log(node, index);
+  },
+  homeHandler: function homeHandler(event, node, index) {
+    console.log(node, index);
+  },
+  menuHandler: function menuHandler(event, node, index) {
+    console.log(node, index);
+  },
+  returnHandler: function returnHandler(event, node, index) {
+    console.log(node, index);
+  },
+  addVolumeHandler: function addVolumeHandler(event, node, index) {
+    console.log(node, index);
+  },
+  subVolumeHandler: function subVolumeHandler(event, node, index) {
+    console.log(node, index);
+  }
+};
 
 var Focuser = function () {
   function Focuser(vm, options) {
-    _classCallCheck$4(this, Focuser);
+    classCallCheck(this, Focuser);
 
     this.init(vm, options);
     this.bindKeyEvent();
   }
 
-  _createClass$4(Focuser, [{
+  createClass(Focuser, [{
     key: 'init',
     value: function init(vm, options) {
       // 存放indexString索引的node节点
-      this.focusMap = {};
+      this.focusElementMap = {};
+      // 索引转化后的数组，例如[[0,1,2], [0,2]] 用于边界判断
+      this.indexMap = [];
       // 存放原始focus相关参数
-      this.focusOptions = options.focus;
+      this.focusOptions = Object.assign({}, defaultFocusOptions, options.focus);
       var currentRowIndex = void 0,
           currentColIndex = void 0;
       if (this.focusOptions && this.focusOptions.defaultFocusIndex) {
@@ -496,47 +563,61 @@ var Focuser = function () {
         currentIndexString: options.focus && options.focus.defaultFocusIndex || '',
         currentRowIndex: currentRowIndex,
         currentColIndex: currentColIndex
+      };
 
-        // 合并键盘绑定键值码
-      };if (this.focusOptions.keysMergeOptions.coverage) {
-        this.keysMap = this.focusOptions.keysMap;
-      } else {
+      this.keysMap = defaultFocusOptions.keysMap;
+
+      // 合并键盘绑定键值码
+      if (this.focusOptions.keysMergeOptions && this.focusOptions.keysMergeOptions.coverage) {
+        this.keysMap = Object.assign({}, this.keysMap, this.focusOptions.keysMap);
+      } else if (this.focusOptions.keysMap) {
         this.keysMap = {
-          'up': [38],
-          'down': [40],
-          'left': [37],
-          'right': [39],
-          'enter': [13, 32],
-          'return': [27]
+          'up': this.focusOptions.keysMap['up'] ? [].concat(toConsumableArray(new Set(this.keysMap['up'].concat(this.focusOptions.keysMap['up'])))) : this.keysMap['up'],
+          'down': this.focusOptions.keysMap['down'] ? [].concat(toConsumableArray(new Set(this.keysMap['down'].concat(this.focusOptions.keysMap['down'])))) : this.keysMap['down'],
+          'left': this.focusOptions.keysMap['left'] ? [].concat(toConsumableArray(new Set(this.keysMap['left'].concat(this.focusOptions.keysMap['left'])))) : this.keysMap['left'],
+          'right': this.focusOptions.keysMap['right'] ? [].concat(toConsumableArray(new Set(this.keysMap['right'].concat(this.focusOptions.keysMap['right'])))) : this.keysMap['right'],
+          'enter': this.focusOptions.keysMap['enter'] ? [].concat(toConsumableArray(new Set(this.keysMap['enter'].concat(this.focusOptions.keysMap['enter'])))) : this.keysMap['enter'],
+          'space': this.focusOptions.keysMap['space'] ? [].concat(toConsumableArray(new Set(this.keysMap['space'].concat(this.focusOptions.keysMap['space'])))) : this.keysMap['space'],
+          'home': this.focusOptions.keysMap['home'] ? [].concat(toConsumableArray(new Set(this.keysMap['home'].concat(this.focusOptions.keysMap['home'])))) : this.keysMap['home'],
+          'menu': this.focusOptions.keysMap['menu'] ? [].concat(toConsumableArray(new Set(this.keysMap['menu'].concat(this.focusOptions.keysMap['menu'])))) : this.keysMap['menu'],
+          'return': this.focusOptions.keysMap['return'] ? [].concat(toConsumableArray(new Set(this.keysMap['return'].concat(this.focusOptions.keysMap['return'])))) : this.keysMap['return'],
+          'addVolume': this.focusOptions.keysMap['addVolume'] ? [].concat(toConsumableArray(new Set(this.keysMap['addVolume'].concat(this.focusOptions.keysMap['addVolume'])))) : this.keysMap['addVolume'],
+          'subVolume': this.focusOptions.keysMap['subVolume'] ? [].concat(toConsumableArray(new Set(this.keysMap['subVolume'].concat(this.focusOptions.keysMap['subVolume'])))) : this.keysMap['subVolume']
         };
       }
-
       vm.focuser = this;
       this.vm = vm;
     }
+
+    // 传入键值码并执行相应的操作
+
   }, {
-    key: 'bindKeyEvent',
-    value: function bindKeyEvent() {
+    key: 'execCommand',
+    value: function execCommand(event) {
       var _this = this;
 
-      window.addEventListener('keydown', function (event) {
-        console.log(event.keyCode);
-        switch (event.keyCode) {
-          case 37:
-            _this.move('left');
-            break;
-          case 38:
-            _this.move('up');
-            break;
-          case 39:
-            _this.move('right');
-            break;
-          case 40:
-            _this.move('down');
-            break;
+      Object.keys(this.keysMap).forEach(function (key) {
+        if (_this.keysMap[key].includes(event.keyCode)) {
+          _this.move(key, event);
         }
       });
     }
+
+    // 绑定键盘事件
+
+  }, {
+    key: 'bindKeyEvent',
+    value: function bindKeyEvent() {
+      window.addEventListener('keydown', this.keyDownHandler.bind(this));
+    }
+  }, {
+    key: 'keyDownHandler',
+    value: function keyDownHandler(event) {
+      this.execCommand(event);
+    }
+
+    // 把有t-focus指令的node节点储存起来
+
   }, {
     key: 'addFocusMap',
     value: function addFocusMap(key, node) {
@@ -544,10 +625,10 @@ var Focuser = function () {
 
       var keys = key.split(/,\s*/);
       keys.forEach(function (item) {
-        if (item in _this2.focusMap) {
+        if (item in _this2.focusElementMap) {
           return console.warn('t-focus should be unique in one TVVM page but t-focus=' + item + ' has already exist');
         }
-        _this2.focusMap[item] = node;
+        _this2.focusElementMap[item] = node;
       });
     }
     // 设置焦点dom
@@ -555,83 +636,229 @@ var Focuser = function () {
   }, {
     key: 'setFocus',
     value: function setFocus(index) {
-      if (index in this.focusMap) {
+      if (index in this.focusElementMap) {
         var arr = index.split('-');
         var currentRowIndex = Number(arr[0]);
         var currentColIndex = Number(arr[1]);
-        this.focusMap[index].focus();
+        this.focusElementMap[index].focus();
         this.focusState.currentIndexString = index;
+        this.focusState.currentFocusElement = this.focusElementMap[index];
         this.focusState.currentRowIndex = currentRowIndex;
         this.focusState.currentColIndex = currentColIndex;
       } else {
-        console.warn('can\'t find t-focus ' + index + ' node');
+        // console.warn(`can't find t-focus ${index} node`)
+      }
+    }
+  }, {
+    key: 'generateIndexMap',
+    value: function generateIndexMap() {
+      var _this3 = this;
+
+      // 0-0, 0-1, 
+      Object.keys(this.focusElementMap).forEach(function (key) {
+        var keyArr = key.split('-');
+        var rowIndex = keyArr[0];
+        var colIndex = keyArr[1];
+        if (_this3.indexMap[rowIndex] === undefined) {
+          _this3.indexMap[rowIndex] = [colIndex];
+        } else {
+          _this3.indexMap[rowIndex].push(colIndex);
+        }
+      });
+      this.indexMap = this.indexMap.map(function (item) {
+        return item.sort(function (a, b) {
+          return a - b;
+        });
+      });
+
+      if (this.focusOptions.defaultFocusIndex !== undefined) {
+        this.setFocus(this.focusOptions.defaultFocusIndex);
+      } else {
+        if (this.indexMap.length !== 0) {
+          this.setFocus([0, this.indexMap[0][0]].join('-'));
+        } else {
+          window.removeEventListener('keydown', this.keyDownHandler);
+        }
       }
     }
   }, {
     key: 'isBoundary',
     value: function isBoundary() {}
+
+    // 焦点处于顶部边界判断
+
   }, {
     key: 'isTopBoundary',
     value: function isTopBoundary() {
-      return this.focusState.currentRowIndex === 0;
+      var rowIndex = this.focusState.currentRowIndex;
+      var colIndex = this.focusState.currentColIndex;
+      if (rowIndex === 0) {
+        return true;
+      }
+      rowIndex--;
+      var indexString = [rowIndex, colIndex].join('-');
+      while (this.focusElementMap[indexString] && this.focusElementMap[this.focusState.currentIndexString] === this.focusElementMap[indexString]) {
+        rowIndex--;
+        indexString = [rowIndex, colIndex].join('-');
+      }
+      rowIndex++;
+      if (rowIndex <= 0) {
+        return true;
+      } else {
+        return false;
+      }
     }
   }, {
     key: 'isLeftBoundary',
     value: function isLeftBoundary() {
-      return this.focusState.currentColIndex === 0;
+      var rowIndex = this.focusState.currentRowIndex;
+      var colIndex = this.focusState.currentColIndex;
+      if (colIndex === this.indexMap[rowIndex][0]) {
+        return true;
+      }
+      colIndex--;
+      var indexString = [rowIndex, colIndex].join('-');
+      while (this.focusElementMap[indexString] && this.focusElementMap[this.focusState.currentIndexString] === this.focusElementMap[indexString]) {
+        colIndex--;
+        indexString = [rowIndex, colIndex].join('-');
+      }
+      colIndex++;
+      if (colIndex > this.indexMap[rowIndex][0]) {
+        return false;
+      } else {
+        return true;
+      }
     }
   }, {
     key: 'isRightBoundary',
-    value: function isRightBoundary() {}
+    value: function isRightBoundary() {
+      var rowIndex = this.focusState.currentRowIndex;
+      var colIndex = this.focusState.currentColIndex;
+      if (colIndex === this.indexMap[rowIndex][this.indexMap[rowIndex].length - 1]) {
+        return true;
+      }
+      colIndex++;
+      var indexString = [rowIndex, colIndex].join('-');
+      while (this.focusElementMap[indexString] && this.focusElementMap[this.focusState.currentIndexString] === this.focusElementMap[indexString]) {
+        colIndex++;
+        indexString = [rowIndex, colIndex].join('-');
+      }
+      colIndex--;
+      if (colIndex < this.indexMap[rowIndex][this.indexMap[rowIndex].length - 1]) {
+        return false;
+      } else {
+        return true;
+      }
+    }
   }, {
     key: 'isBottomBoundary',
-    value: function isBottomBoundary() {}
+    value: function isBottomBoundary() {
+      var rowIndex = this.focusState.currentRowIndex;
+      var colIndex = this.focusState.currentColIndex;
+      if (rowIndex === this.indexMap.length - 1) {
+        return true;
+      }
+      rowIndex++;
+      var indexString = [rowIndex, colIndex].join('-');
+      while (this.focusElementMap[indexString] && this.focusElementMap[this.focusState.currentIndexString] === this.focusElementMap[indexString]) {
+        rowIndex++;
+        indexString = [rowIndex, colIndex].join('-');
+      }
+      rowIndex--;
+      if (rowIndex >= this.indexMap.length - 1) {
+        return true;
+      } else {
+        return false;
+      }
+    }
   }, {
     key: 'moveUp',
-    value: function moveUp() {
+    value: function moveUp(event, node, index) {
+      this.focusOptions.moveUpHandler(event, node, index);
       if (this.isTopBoundary()) {
-        // donothing
+        if (this.focusOptions.circle.vertical) {
+          var rowIndex = this.indexMap.length - 1;
+          var colIndex = this.focusState.currentColIndex;
+          var indexString = [rowIndex, colIndex].join('-');
+          this.setFocus(indexString);
+        }
       } else {
-        var rowIndex = this.focusState.currentRowIndex - 1;
-        var colIndex = this.focusState.currentColIndex;
-        var indexString = [rowIndex, colIndex].join('-');
-        this.setFocus(indexString);
+        var _rowIndex = this.focusState.currentRowIndex - 1;
+        var _colIndex = this.focusState.currentColIndex;
+        var _indexString = [_rowIndex, _colIndex].join('-');
+        while (this.focusElementMap[this.focusState.currentIndexString] === this.focusElementMap[_indexString]) {
+          _rowIndex--;
+          _indexString = [_rowIndex, _colIndex].join('-');
+        }
+        _indexString = [_rowIndex, _colIndex].join('-');
+        this.setFocus(_indexString);
       }
     }
   }, {
     key: 'moveDown',
-    value: function moveDown() {
+    value: function moveDown(event, node, index) {
       if (this.isBottomBoundary()) {
-        // donothing
+        if (this.focusOptions.circle.vertical) {
+          var rowIndex = 0;
+          var colIndex = this.focusState.currentColIndex;
+          var indexString = [rowIndex, colIndex].join('-');
+          this.setFocus(indexString);
+        }
       } else {
-        var rowIndex = this.focusState.currentRowIndex + 1;
-        var colIndex = this.focusState.currentColIndex;
-        var indexString = [rowIndex, colIndex].join('-');
-        this.setFocus(indexString);
+        var _rowIndex2 = this.focusState.currentRowIndex + 1;
+        var _colIndex2 = this.focusState.currentColIndex;
+        var _indexString2 = [_rowIndex2, _colIndex2].join('-');
+        while (this.focusElementMap[this.focusState.currentIndexString] === this.focusElementMap[_indexString2]) {
+          _rowIndex2++;
+          _indexString2 = [_rowIndex2, _colIndex2].join('-');
+        }
+        _indexString2 = [_rowIndex2, _colIndex2].join('-');
+        this.setFocus(_indexString2);
       }
     }
   }, {
     key: 'moveLeft',
-    value: function moveLeft() {
+    value: function moveLeft(event, node, index) {
       if (this.isLeftBoundary()) {
-        // donothing
+        if (this.focusOptions.circle.horizontal) {
+          var rowIndex = this.focusState.currentRowIndex;
+          var colIndex = this.indexMap[rowIndex][this.indexMap[rowIndex].length - 1];
+          var indexString = [rowIndex, colIndex].join('-');
+          this.setFocus(indexString);
+        }
       } else {
-        var rowIndex = this.focusState.currentRowIndex;
-        var colIndex = this.focusState.currentColIndex - 1;
-        var indexString = [rowIndex, colIndex].join('-');
-        this.setFocus(indexString);
+        var _rowIndex3 = this.focusState.currentRowIndex;
+        var _colIndex3 = this.focusState.currentColIndex - 1;
+        var _indexString3 = [_rowIndex3, _colIndex3].join('-');
+        // 如果nextindex和previndex引用的是同一个element，则自减
+        while (this.focusElementMap[this.focusState.currentIndexString] === this.focusElementMap[_indexString3]) {
+          _colIndex3--;
+          _indexString3 = [_rowIndex3, _colIndex3].join('-');
+        }
+        _indexString3 = [_rowIndex3, _colIndex3].join('-');
+        this.setFocus(_indexString3);
       }
     }
   }, {
     key: 'moveRight',
-    value: function moveRight() {
+    value: function moveRight(event, node, index) {
       if (this.isRightBoundary()) {
-        // donothing
+        if (this.focusOptions.circle.horizontal) {
+          var rowIndex = this.focusState.currentRowIndex;
+          var colIndex = this.indexMap[rowIndex][0];
+          var indexString = [rowIndex, colIndex].join('-');
+          this.setFocus(indexString);
+        }
       } else {
-        var rowIndex = this.focusState.currentRowIndex;
-        var colIndex = this.focusState.currentColIndex + 1;
-        var indexString = [rowIndex, colIndex].join('-');
-        this.setFocus(indexString);
+        var _rowIndex4 = this.focusState.currentRowIndex;
+        var _colIndex4 = this.focusState.currentColIndex + 1;
+        var _indexString4 = [_rowIndex4, _colIndex4].join('-');
+        while (this.focusElementMap[this.focusState.currentIndexString] === this.focusElementMap[_indexString4]) {
+          _colIndex4++;
+          _indexString4 = [_rowIndex4, _colIndex4].join('-');
+        }
+        _indexString4 = [_rowIndex4, _colIndex4].join('-');
+        this.setFocus(_indexString4);
       }
     }
 
@@ -639,27 +866,29 @@ var Focuser = function () {
 
   }, {
     key: 'move',
-    value: function move(direction, baseIndex, circle) {
+    value: function move(direction, event) {
       var directionMap = {
         'up': this.moveUp,
         'down': this.moveDown,
         'left': this.moveLeft,
-        'right': this.moveRight
+        'right': this.moveRight,
+        'enter': this.focusOptions.enterHandler,
+        'return': this.focusOptions.returnHandler,
+        'space': this.focusOptions.spaceHandler,
+        'home': this.focusOptions.homeHandler,
+        'menu': this.focusOptions.menuHandler,
+        'addVolume': this.focusOptions.addVolumeHandler,
+        'subVolume': this.focusOptions.subVolumeHandler
       };
-      directionMap[direction].call(this);
+      directionMap[direction].call(this, event, this.focusState.currentFocusElement, this.focusState.currentIndexString);
     }
   }]);
-
   return Focuser;
 }();
 
-var _createClass$5 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck$5(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
 var Lifecycle = function () {
   function Lifecycle(options, vm) {
-    _classCallCheck$5(this, Lifecycle);
+    classCallCheck(this, Lifecycle);
 
     this.hooks = {};
     this.init(options, vm);
@@ -667,7 +896,7 @@ var Lifecycle = function () {
     vm.callHook = this.callHook.bind(this);
   }
 
-  _createClass$5(Lifecycle, [{
+  createClass(Lifecycle, [{
     key: 'init',
     value: function init(options, vm) {
       var beforeCreate = options.beforeCreate,
@@ -700,7 +929,6 @@ var Lifecycle = function () {
       this.hooks[fnName]();
     }
   }]);
-
   return Lifecycle;
 }();
 
@@ -708,13 +936,9 @@ function emptyFn() {
   return;
 }
 
-var _createClass$6 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck$6(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
 var TVVM = function () {
   function TVVM(options) {
-    _classCallCheck$6(this, TVVM);
+    classCallCheck(this, TVVM);
 
     // 初始化参数， 把el， data等进行赋值与绑定
     // data如果是函数就取返回值， 如果不是则直接赋值
@@ -740,6 +964,7 @@ var TVVM = function () {
       // beforeMounte
       this.callHook('beforeMount');
       new Compiler(options.el, this);
+      this.focuser.generateIndexMap();
       // mounted 此时可以访问 this.$el
       this.callHook('mounted');
     }
@@ -747,17 +972,17 @@ var TVVM = function () {
   // 数据代理, 访问/设置 this.a 相当于访问设置 this.data.a
 
 
-  _createClass$6(TVVM, [{
+  createClass(TVVM, [{
     key: 'proxy',
     value: function proxy(data, proxyTarget) {
       Object.keys(data).forEach(function (key) {
         Object.defineProperty(proxyTarget, key, {
           enumerable: true,
           configurable: true,
-          get: function get() {
+          get: function get$$1() {
             return data[key];
           },
-          set: function set(newValue) {
+          set: function set$$1(newValue) {
             if (proxyTarget[key] !== undefined) {
               console.warn('key ' + key + ' has already in Target');
             }
@@ -767,7 +992,6 @@ var TVVM = function () {
       });
     }
   }]);
-
   return TVVM;
 }();
 

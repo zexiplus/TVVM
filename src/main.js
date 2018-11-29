@@ -29,6 +29,7 @@ class TVVM {
       // beforeMounte
       this.callHook('beforeMount')
       new Compiler(options.el, this);
+      this.focuser.generateIndexMap()
       // mounted 此时可以访问 this.$el
       this.callHook('mounted')
     }

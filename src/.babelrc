@@ -4,13 +4,8 @@
       "modules": false
     }]
   ],
+  "plugins": ["external-helpers"],
   "env": {
-    "dev": {
-      "plugins": ["external-helpers"]
-    }, 
-    "production": {
-      "plugins": ["external-helpers"]
-    },
     "test": {
       "plugins": ["transform-es2015-modules-commonjs"]
     }
