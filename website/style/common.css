@@ -18,6 +18,7 @@ a {
   text-decoration: none;
   color: #666;
   font-weight: 50;
+  cursor: pointer;
 }
 a:active {
   font-weight: bold;
@@ -30,6 +31,7 @@ a:active {
   background-color: rgba(255,255,255,0.9);
   display: flex;
   justify-content: space-between;
+  overflow: hidden;
 }
 .logo {
   background-image: url(../imgs/logo.png);
