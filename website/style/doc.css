@@ -1,0 +1,86 @@
+@media only screen and (max-width: 600px) {
+  .left-nav {
+    width: 0 !important;
+  }
+}
+h1, h2, h3, h4 {
+  color: #0048ab;
+}
+
+.container {
+  font-family: 'bebasneue';
+  display: flex;
+  flex-direction: row;
+}
+
+.left-nav {
+  width: 200px;
+  height: calc(100vh - 61px);
+  font-family: 'bebasneue';
+  font-size: 14px;
+  display: flex;
+  background-color: #fdfbfb;
+  border-right: 1px solid #ebebeb;
+  flex-direction: column;
+  overflow-y: auto;
+}
+.left-nav a {
+  padding: 5px 10px;
+  text-indent: 1rem;
+  display: block;
+}
+.left-nav a:hover {
+  font-weight: bold;
+}
+
+
+.link-title {
+  
+}
+.link-title a {
+  font-size: 16px;
+  color: #0048ab !important;
+}
+.link-group {
+
+}
+.link-group a {
+  text-indent: 2rem;
+}
+.link-detail a {
+  text-indent: 4rem;
+}
+
+.content {
+  padding: 0 1rem;
+  box-sizing: border-box;
+  width: 100%;
+  height: calc(100vh - 61px);
+  overflow: auto;
+}
+
+.content h1 {
+  margin: 20px 0;
+}
+.content h2 {
+  margin: 15px 0;
+}
+.content h3 {
+  margin: 10px 0;
+}
+
+.block-content {
+  margin-bottom: 2rem;
+}
+
+pre {
+  overflow: hidden;
+  padding: 0 !important;
+  border-radius: 5px;
+  width: 100% !important;
+}
+
+code {
+  border-left: 2px solid #0048ab;
+  border-radius: 0 5px 5px 0;
+}

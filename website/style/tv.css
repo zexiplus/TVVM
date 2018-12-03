@@ -5,9 +5,10 @@
   }
 }
 .tv {
+  box-sizing: border-box;
   position: relative;
-  width: 400px;
-  height: 260px;
+  width: 375px;
+  height: 240px;
   display: flex;
   flex-direction: column;
   border: 7px solid #777;

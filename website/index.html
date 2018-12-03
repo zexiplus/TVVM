@@ -18,9 +18,9 @@
   </style>
 </head>
 <body>
-  <div id="app">
+  <div id="tv">
     <nav class="navbar">
-      <div class="logo"></div>
+      <div class="logo">TVVM</div>
       <div class="link-list">
         <a style="font-weight: bold;" href="Home">Home</a>
         <span>/</span>
@@ -64,7 +64,7 @@
   </div>
   <script>
     new TVVM({
-      el: '#app',
+      el: '#tv',
       data: function () {
         return {
           userinfo: {
@@ -84,6 +84,17 @@
           'return': [27],
           'addVolume': [133]
         },
+        keysHandlerMap: {
+          moveUpHandler(event, node, index, prevNode) {
+            console.log('event', event)
+          },
+          returnHandler(event, node, index, prevNode) {
+
+          },
+          enterHandler(event, node, index, prevNode) {
+
+          }
+        }, 
         keysMergeOptions: {
           coverage: false
         },
@@ -96,15 +107,6 @@
           horizontal: true,
           vertical: true,
         },
-        moveUpHandler(event, node, index, prevNode) {
-          console.log('event', event)
-        },
-        returnHandler(event, node, index, prevNode) {
-
-        },
-        enterHandler(event, node, index, prevNode) {
-          
-        }
       },
       methods: {
         testFn: function (a, b) {

@@ -16,38 +16,40 @@ const defaultFocusOptions = {
     'addVolume': [175],
     'subVolume': [174]
   },
-  moveUpHandler(event, node, index) {
-    console.log(node, index)
-  },
-  moveDownHandler(event, node, index) {
-    console.log(node, index)
-  },
-  moveLeftHandler(event, node, index) {
-    console.log(node, index)
-  },
-  moveRightHandler(event, node, index) {
-    console.log(node, index)
-  },
-  enterHandler(event, node, index) {
-    console.log(node, index)
-  },
-  spaceHandler(event, node, index) {
-    console.log(node, index)
-  },
-  homeHandler(event, node, index) {
-    console.log(node, index)
-  },
-  menuHandler(event, node, index) {
-    console.log(node, index)
-  },
-  returnHandler(event, node, index) {
-    console.log(node, index)
-  },
-  addVolumeHandler(event, node, index) {
-    console.log(node, index)
-  },
-  subVolumeHandler(event, node, index) {
-    console.log(node, index)
+  keysHandlerMap: {
+    moveUpHandler(event, node, index) {
+      console.log(node, index)
+    },
+    moveDownHandler(event, node, index) {
+      console.log(node, index)
+    },
+    moveLeftHandler(event, node, index) {
+      console.log(node, index)
+    },
+    moveRightHandler(event, node, index) {
+      console.log(node, index)
+    },
+    enterHandler(event, node, index) {
+      console.log(node, index)
+    },
+    spaceHandler(event, node, index) {
+      console.log(node, index)
+    },
+    homeHandler(event, node, index) {
+      console.log(node, index)
+    },
+    menuHandler(event, node, index) {
+      console.log(node, index)
+    },
+    returnHandler(event, node, index) {
+      console.log(node, index)
+    },
+    addVolumeHandler(event, node, index) {
+      console.log(node, index)
+    },
+    subVolumeHandler(event, node, index) {
+      console.log(node, index)
+    }
   }
 }
 
@@ -257,7 +259,7 @@ class Focuser {
   }
 
   moveUp(event, node, index) {
-    this.focusOptions.moveUpHandler(event, node, index);
+    this.focusOptions.keysHandlerMap.moveUpHandler(event, node, index);
     if (this.isTopBoundary()) {
       if (this.focusOptions.circle.vertical) {
         let rowIndex = this.indexMap.length - 1
