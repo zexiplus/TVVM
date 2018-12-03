@@ -35,6 +35,8 @@ class Compiler {
     let childNodes = parentNode.childNodes;
     // console.log('childNodes is', childNodes)
     childNodes.forEach((node, index) => {
+      // 不编译code代码节点
+      if (node.tagName === 'CODE') return
       if (this.isElement(node)) {
         this.compile(node);
         this.compileNode(node);
@@ -85,7 +87,7 @@ class Compiler {
   // 编译node节点
   compileNode(node) {
     let attrs = node.getAttributeNames();
-    // 把t-指令(不包括t-focus)属性存到一个数组中
+    // 把t-指令(不包括t-index)属性存到一个数组中
     let directiveAttrs = attrs.filter((attrname) => {
       return this.isDirective(attrname) && !this.isTFocus(attrname)
     });
@@ -100,8 +102,9 @@ class Compiler {
     });
 
     // 焦点记录逻辑
-    if (attrs.includes('t-focus')) {
-      let focusIndex = node.getAttribute('t-focus')
+    if (attrs.includes('t-index')) {
+      let focusIndex = node.getAttribute('t-index')
+      node.setAttribute('tabindex', this.vm.focuser.tid)
       this.vm.focuser.addFocusMap(focusIndex, node)
     }
 
@@ -159,9 +162,9 @@ class Compiler {
     return text.includes("t-");
   }
 
-  // 判断是否是t-focus
+  // 判断是否是t-index
   isTFocus(text) {
-    return text === 't-focus'
+    return text === 't-index'
   }
 
   // 根据传入的值， 如果是dom节点直接返回， 如果是选择器， 则返回相应的dom节点

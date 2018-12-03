@@ -34,25 +34,25 @@
         <div class="header-block">
           <div class="user-info">{{userinfo.name}}</div>
           <div class="status-right">
-            <div class="circle net-status" t-focus="0-0,0-1" tabindex="0">
+            <div class="circle net-status" t-index="0-0,0-1">
               <i class="iconfont icon-wifi1"></i>
             </div>
-            <div class="circle sys-message" t-focus="0-2" tabindex="1">
+            <div class="circle sys-message" t-index="0-2">
               <i class="iconfont icon-duihuaxinxi"></i>
             </div>
-            <div class="circle sys-setting" t-focus="0-3" tabindex="2">
+            <div class="circle sys-setting" t-index="0-3">
               <i class="iconfont icon-shezhi1"></i>
             </div>
           </div>
         </div>
         <div class="block-container">
-          <div class="block block1" t-focus="1-0, 2-0" tabindex="3"></div>
+          <div class="block block1" t-index="1-0, 2-0"></div>
           <div class="block2">
-            <div class="block block2-1" t-focus="1-1, 1-2, 1-3" tabindex="4"></div>
+            <div class="block block2-1" t-index="1-1, 1-2, 1-3"></div>
             <div class="block2-2">
-              <div class="block block2-2-1" t-focus="2-1" tabindex="5"></div>
-              <div class="block block2-2-2" t-focus="2-2" tabindex="6"></div>
-              <div class="block block2-2-3" t-focus="2-3" tabindex="7"></div>
+              <div class="block block2-2-1" t-index="2-1"></div>
+              <div class="block block2-2-2" t-index="2-2"></div>
+              <div class="block block2-2-3" t-index="2-3"></div>
             </div>
           </div>
         </div>
@@ -75,29 +75,59 @@
       focus: {
         defaultFocusIndex: '1-0',
         keysMap: {
-          'up': [38, 104],
-          'down': [40, 98],
-          'left': [37, 100],
-          'right': [39, 102],
-          'enter': [13, 32],
-          'space': [32],
-          'return': [27],
-          'addVolume': [133]
-        },
-        keysHandlerMap: {
-          moveUpHandler(event, node, index, prevNode) {
-            console.log('event', event)
+          'up': {
+            codes: [38],
+            handler: function (event, node, index, prevNode) {
+              console.log('up?')
+            }
           },
-          returnHandler(event, node, index, prevNode) {
-
+          'g': {
+            codes: [71],
+            handler: function (event, node, index, prevNode) {
+              console.log('you press g')
+            }
           },
-          enterHandler(event, node, index, prevNode) {
-
-          }
-        }, 
-        keysMergeOptions: {
-          coverage: false
+          'down': {
+            codes: [40]
+          },
+          'left':{
+            codes: [37],
+            handler: function (event, node, index, prevNode) {
+              
+            }
+          },
+          'right': {
+            codes: [39],
+            handler: function (event, node, index, prevNode) {
+              
+            }
+          },
+          'enter': {
+            codes: [13],
+            handler: function (event, node, index, prevNode) {
+              console.log('enter')
+            }
+          },
+          'space': {
+            codes: [32],
+            handler: function (event, node, index, prevNode) {
+              
+            }
+          },
+          'return': {
+            codes: [27],
+            handler: function (event, node, index, prevNode) {
+              
+            }
+          },
+          'addVolume': {
+            codes: [133],
+            handler: function (event, node, index, prevNode) {
+              
+            }
+          },
         },
+        keysMapMergeCoverage: false,
         specialKeys: {
           '11': function (event, node, index, prevNode) {
 

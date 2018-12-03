@@ -14,7 +14,7 @@
   <script src="../../dist/tvvm.js"></script>
 </head>
 <body>
-  <div id="app">
+  <div id="doc">
     <nav class="navbar">
       <div class="logo">TVVM</div>
       <div class="link-list">
@@ -34,6 +34,14 @@
           <a href="#desc">介绍</a>
           <a href="#download">下载</a>
           <a href="#usage">使用</a>
+        </div>
+        <span class="link-title">
+          <a href="#feature">特色</a>
+        </span>
+        <div class="link-group">
+          <a href="#focus-control">焦点控制</a>
+          <a href="#event-optmize">事件绑定优化</a>
+          <a href="#data-insert">数据插值</a>
         </div>
         <span class="link-title">
           <a href="#api">API</a>
@@ -106,8 +114,8 @@
           <div class="desc-text">new TVVM 返回一个tv实例, 作为该页面的全局单例入口</div>
           <pre>
             <code class="javascript">
-var tv = new TVVM({
-	el: '#tv',
+  var tv = new TVVM({
+    el: '#tv',
     data () {
         return {
 
@@ -121,22 +129,242 @@ var tv = new TVVM({
 
         }
     }
-})
+  })
             </code>
           </pre>
 
-          <h2>指令</h2>
+          <h2 id="directives">指令</h2>
           <span class="desc-text">
-            TVVM内置指令系统, 包含了一些常用的指令, 用于处理简单的模版逻辑.TVVM内置指令通常以 t-开头作为标识
+            TVVM内置指令系统, 包含了一些常用的指令, 用于处理简单的模版逻辑.TVVM内置指令通常以 t- 开头作为标识
           </span>
           <pre>
             <code class="html">
-              
+  &lt;html&gt;
+    &lt;head&gt;&lt;/head&gt;
+    &lt;body&gt;
+        &lt;div id=&quot;tv&quot;&gt;
+            &lt;div t-if=&quot;dialogVisible&quot; class=&quot;dialog&quot;&gt;{{dialog.title}}&lt;/div&gt;
+            &lt;nav&gt;
+                &lt;a t-for=&quot;item in linkList&quot;&gt;{{item.label}}&lt;/a&gt;
+            &lt;/nav&gt;
+            &lt;form&gt;
+              &lt;input t-model=&quot;dialog.title&quot; /&gt;
+            &lt;/form&gt;
+            &lt;div class=&quot;block2&quot;&gt;
+            &lt;div class=&quot;block block2-1&quot; t-index=&quot;1-1, 1-2, 1-3&quot;&gt;&lt;/div&gt;
+            &lt;div class=&quot;block2-2&quot;&gt;
+              &lt;div class=&quot;block block2-2-1&quot; t-index=&quot;2-1&quot;&gt;&lt;/div&gt;
+              &lt;div class=&quot;block block2-2-2&quot; t-index=&quot;2-2&quot;&gt;&lt;/div&gt;
+              &lt;div class=&quot;block block2-2-3&quot; t-index=&quot;2-3&quot;&gt;&lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/body&gt;
+  &lt;/html&gt;
             </code>
           </pre>
           <div class="block-content">
-            <h3>t-if</h3>
+            <h3 id="t-if">t-if</h3>
+            <div class="desc-text">
+                用于显示/隐藏dom节点, 该指令接收一个在data参数上存在的布尔值
+            </div>
+            <pre>
+              <code class="html">
+&lt;div t-if=&quot;dialogVisible&quot;&gt;&lt;/div&gt;
+              </code>
+            </pre>
+            <h3 id="t-for">t-for</h3>
+            <div class="desc-text">
+                用于循环指定的dom节点, 该指令接收一个表达式,如下item代表数组的每一项, array是data上定义的一个数组
+            </div>
+            <pre>
+              <code class="html">
+&lt;ul&gt;
+  &lt;li t-for=&quot;item in array&quot;&gt;{{item.label}}&lt;/li&gt;
+&lt;/ul&gt;
+              </code>
+            </pre>
+            <h3 id="data-bind">data bind</h3>
+            <div class="desc-text">
+                数据插值, 双花括号({{}})内接收一个data的属性.用于页面内数据插值
+            </div>
+            <pre>
+              <code class="javascript">
+data: { name: 'float' }
+              </code>
+              <code class="html">
+&lt;span&gt;{{name}}&lt;/span&gt;
+&lt;!-- 渲染为 --&gt;
+&lt;span&gt;float&lt;/span&gt;
+              </code>
+            </pre>
+          </div>
+          
+          <h2 id="options">选项</h2>
+          <div class="desc-text">
+              new TVVM接收一个选项对象作为唯一参数
+          </div>
+          <pre>
+            <code class="javascript">
+var tv = new TVVM({
+  el,
+  data,
+  focus,
+  methods,
+  lifeHooks,
+})
+            </code>
+          </pre>
+          <div class="block-content">
+            <h3 id="el">el</h3>
+            <div class="desc-text">
+                new TVVM() 实例挂载的dom元素, 可以是一个元素查找符或者dom节点对象
+            </div>
+            <pre>
+              <code class="javascript">
+new TVVM({
+    el: '#tv',
+})
+              </code>
+            </pre>
 
+            <h3 id="focus">focus</h3>
+            <div class="desc-text">
+              focus选项用于设置焦点移动， 键值绑定， 默认焦点等逻辑
+            </div>
+            <pre>
+              <code class="javascript">
+new TVVM({
+  focus: {
+    defaultFocusIndex: '1-0',
+    keysMap: {
+      'up': {
+        codes: [38, 103],
+        handler: function (event, node, index, prevNode) {
+
+        }
+      },
+      'g': {
+        codes: [71],
+        handler: function (event, node, index, prevNode) {
+          console.log('you press g')
+        }
+      },
+    },
+    keysMapMergeCoverage: false,
+    circle: {
+      horizontal: true,
+      vertical: true,
+    }
+  }
+})
+              </code>
+            </pre>
+
+            <h4 id="defaultFocusIndex">defaultFocusIndex (可选)</h4>
+            <div class="desc-text">
+                进入应用默认聚焦的元素的索引, 该参数为空时， 默认聚焦到页面首个焦点元素上
+            </div>
+            <pre>
+              <code class="javascript">
+  focus: {
+      defaultIndex: '0-1'
+  }
+              </code>
+            </pre>
+            <h4 id="circle">circle (可选)</h4>
+            <div class="desc-text">
+              定义焦点在水平/垂直方向上是否可循环移动, 默认false. <br>
+              - horizontal (可选) 焦点元素在水平方向是否可以循环移动, 默认false <br>
+              - vertival (可选) 焦点元素在水平方向上是否可以循环移动, 默认false
+              
+            </div>
+            <pre>
+              <code class="javascript">
+  focus: {
+      circle: {
+          horizontal: true,
+          vertical: true
+      }
+  }
+              </code>
+            </pre>
+
+            <h4 id="keysMap">keysMap</h4>
+            <div class="desc-text">
+                遥控器键盘键值码映射表,  该参数为空时使用默认键值码映射表<br>
+                - 'alias' 对应键值的别名<br>
+                - codes 对应键值数组<br>
+                - handler 对应按键值绑定的事件处理函数 参数分别是event(事件), node(当前焦点dom节点索引), index (当前焦点dom节点的t-index值), prevNode(上一个焦点dom节点索引)
+            </div>
+            <pre>
+              <code class="javascript">
+  focus: {
+    keysMap: {
+    'up': {
+      codes: [38, 104],
+      handler: function (event, node, index, prevNode)
+    },
+    'down': {
+      codes: [40, 98],
+      handler
+    },
+    'left': {
+      codes: [37, 100],
+      handler
+    },
+    'right': {
+      codes: [39, 102],
+      handler
+    },
+    'enter': {
+      codes: [13, 32],
+      handler
+    }
+  }
+
+              </code>
+            </pre>
+            <h4>keysMapMergeCoverage (可选)</h4>
+            <div class="desc-text">
+                键值映射表合并策略true为覆盖, false为合并
+            </div>
+            <pre>
+              <code class="javascript">
+focus: {
+  keysMapMergeCoverage: false,
+}
+              </code>
+            </pre>
+            <h3 id="data">data</h3>
+            <div class="desc-text">
+                tv单例的数据对象, 可以是一个函数或者对象, 当该参数为函数时, 取值为该函数的返回值
+            </div>
+            <pre>
+              <code class="javascript">
+  new TVVM({
+    data: function () {
+        return {
+            title: 'tvvm demo page',
+            index: '0'
+        }
+    }
+  })
+              </code>
+            </pre>
+            <h3 id="methods">methods</h3>
+            <div class="desc-text">
+                该参数是一个对象, 存放所有的方法函数
+            </div>
+            <pre>
+              <code class="javascript">
+  methods: {
+    methods1: function () {
+        console.log('methods1')
+    }
+  }
+              </code>
+            </pre>
           </div>
         </div>
       </div>
@@ -149,7 +377,7 @@ var tv = new TVVM({
   </div>
   <script>
     new TVVM({
-      el: '#app',
+      el: '#doc',
       data: function () {
         return {
           navList: [

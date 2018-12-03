@@ -72,7 +72,9 @@ h1, h2, h3, h4 {
 .block-content {
   margin-bottom: 2rem;
 }
-
+.desc-text {
+  margin-top: 1rem;
+}
 pre {
   overflow: hidden;
   padding: 0 !important;

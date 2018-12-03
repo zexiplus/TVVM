@@ -288,6 +288,8 @@ var Compiler = function () {
       var childNodes = parentNode.childNodes;
       // console.log('childNodes is', childNodes)
       childNodes.forEach(function (node, index) {
+        // 不编译code代码节点
+        if (node.tagName === 'CODE') return;
         if (_this.isElement(node)) {
           _this.compile(node);
           _this.compileNode(node);
@@ -347,7 +349,7 @@ var Compiler = function () {
       var _this3 = this;
 
       var attrs = node.getAttributeNames();
-      // 把t-指令(不包括t-focus)属性存到一个数组中
+      // 把t-指令(不包括t-index)属性存到一个数组中
       var directiveAttrs = attrs.filter(function (attrname) {
         return _this3.isDirective(attrname) && !_this3.isTFocus(attrname);
       });
@@ -362,8 +364,9 @@ var Compiler = function () {
       });
 
       // 焦点记录逻辑
-      if (attrs.includes('t-focus')) {
-        var focusIndex = node.getAttribute('t-focus');
+      if (attrs.includes('t-index')) {
+        var focusIndex = node.getAttribute('t-index');
+        node.setAttribute('tabindex', this.vm.focuser.tid);
         this.vm.focuser.addFocusMap(focusIndex, node);
       }
 
@@ -432,12 +435,12 @@ var Compiler = function () {
       return text.includes("t-");
     }
 
-    // 判断是否是t-focus
+    // 判断是否是t-index
 
   }, {
     key: "isTFocus",
     value: function isTFocus(text) {
-      return text === 't-focus';
+      return text === 't-index';
     }
 
     // 根据传入的值， 如果是dom节点直接返回， 如果是选择器， 则返回相应的dom节点
@@ -483,63 +486,68 @@ var Compiler = function () {
   return Compiler;
 }();
 
+var blankFn = function blankFn(event, node, index, prevNode) {
+  console.log('blankfn');
+};
 var defaultFocusOptions = {
   circle: {
     horizontal: false,
     vertical: false
   },
   keysMap: {
-    'up': [38],
-    'down': [40],
-    'left': [37],
-    'right': [39],
-    'enter': [13],
-    'space': [32],
-    'home': [36],
-    'menu': [18],
-    'return': [27],
-    'addVolume': [175],
-    'subVolume': [174]
+    'up': {
+      codes: [38, 104],
+      handler: blankFn
+    },
+    'down': {
+      codes: [40, 98],
+      handler: blankFn
+    },
+    'left': {
+      codes: [37, 100],
+      handler: blankFn
+    },
+    'right': {
+      codes: [39, 102],
+      handler: blankFn
+    },
+    'enter': {
+      codes: [13, 32],
+      handler: blankFn
+    },
+    'space': {
+      codes: [32],
+      handler: blankFn
+    },
+    'home': {
+      codes: [36],
+      handler: blankFn
+    },
+    'menu': {
+      codes: [18],
+      handler: blankFn
+    },
+    'return': {
+      codes: [27],
+      handler: blankFn
+    },
+    'addVolume': {
+      codes: [175],
+      handler: blankFn
+    },
+    'subVolume': {
+      codes: [174],
+      handler: blankFn
+    }
   },
-  moveUpHandler: function moveUpHandler(event, node, index) {
-    console.log(node, index);
-  },
-  moveDownHandler: function moveDownHandler(event, node, index) {
-    console.log(node, index);
-  },
-  moveLeftHandler: function moveLeftHandler(event, node, index) {
-    console.log(node, index);
-  },
-  moveRightHandler: function moveRightHandler(event, node, index) {
-    console.log(node, index);
-  },
-  enterHandler: function enterHandler(event, node, index) {
-    console.log(node, index);
-  },
-  spaceHandler: function spaceHandler(event, node, index) {
-    console.log(node, index);
-  },
-  homeHandler: function homeHandler(event, node, index) {
-    console.log(node, index);
-  },
-  menuHandler: function menuHandler(event, node, index) {
-    console.log(node, index);
-  },
-  returnHandler: function returnHandler(event, node, index) {
-    console.log(node, index);
-  },
-  addVolumeHandler: function addVolumeHandler(event, node, index) {
-    console.log(node, index);
-  },
-  subVolumeHandler: function subVolumeHandler(event, node, index) {
-    console.log(node, index);
-  }
+  keysMapMergeCoverage: false
 };
 
 var Focuser = function () {
   function Focuser(vm, options) {
     classCallCheck(this, Focuser);
 
+    this.tid = 0;
     this.init(vm, options);
     this.bindKeyEvent();
   }
@@ -547,6 +555,8 @@ var Focuser = function () {
   createClass(Focuser, [{
     key: 'init',
     value: function init(vm, options) {
+      var _this = this;
+
       // 存放indexString索引的node节点
       this.focusElementMap = {};
       // 索引转化后的数组，例如[[0,1,2], [0,2]] 用于边界判断
@@ -555,7 +565,7 @@ var Focuser = function () {
       this.focusOptions = Object.assign({}, defaultFocusOptions, options.focus);
       var currentRowIndex = void 0,
           currentColIndex = void 0;
-      if (this.focusOptions && this.focusOptions.defaultFocusIndex) {
+      if (this.focusOptions.defaultFocusIndex) {
         var IndexArr = options.focus && options.focus.defaultFocusIndex.split('-');
         currentRowIndex = Number(IndexArr[0]);
         currentColIndex = Number(IndexArr[1]);
@@ -567,26 +577,25 @@ var Focuser = function () {
         currentColIndex: currentColIndex
       };
 
-      this.keysMap = defaultFocusOptions.keysMap;
-
+      this.keysMap = this.focusOptions.keysMap;
       // 合并键盘绑定键值码
-      if (this.focusOptions.keysMergeOptions && this.focusOptions.keysMergeOptions.coverage) {
-        this.keysMap = Object.assign({}, this.keysMap, this.focusOptions.keysMap);
-      } else if (this.focusOptions.keysMap) {
-        this.keysMap = {
-          'up': this.focusOptions.keysMap['up'] ? [].concat(toConsumableArray(new Set(this.keysMap['up'].concat(this.focusOptions.keysMap['up'])))) : this.keysMap['up'],
-          'down': this.focusOptions.keysMap['down'] ? [].concat(toConsumableArray(new Set(this.keysMap['down'].concat(this.focusOptions.keysMap['down'])))) : this.keysMap['down'],
-          'left': this.focusOptions.keysMap['left'] ? [].concat(toConsumableArray(new Set(this.keysMap['left'].concat(this.focusOptions.keysMap['left'])))) : this.keysMap['left'],
-          'right': this.focusOptions.keysMap['right'] ? [].concat(toConsumableArray(new Set(this.keysMap['right'].concat(this.focusOptions.keysMap['right'])))) : this.keysMap['right'],
-          'enter': this.focusOptions.keysMap['enter'] ? [].concat(toConsumableArray(new Set(this.keysMap['enter'].concat(this.focusOptions.keysMap['enter'])))) : this.keysMap['enter'],
-          'space': this.focusOptions.keysMap['space'] ? [].concat(toConsumableArray(new Set(this.keysMap['space'].concat(this.focusOptions.keysMap['space'])))) : this.keysMap['space'],
-          'home': this.focusOptions.keysMap['home'] ? [].concat(toConsumableArray(new Set(this.keysMap['home'].concat(this.focusOptions.keysMap['home'])))) : this.keysMap['home'],
-          'menu': this.focusOptions.keysMap['menu'] ? [].concat(toConsumableArray(new Set(this.keysMap['menu'].concat(this.focusOptions.keysMap['menu'])))) : this.keysMap['menu'],
-          'return': this.focusOptions.keysMap['return'] ? [].concat(toConsumableArray(new Set(this.keysMap['return'].concat(this.focusOptions.keysMap['return'])))) : this.keysMap['return'],
-          'addVolume': this.focusOptions.keysMap['addVolume'] ? [].concat(toConsumableArray(new Set(this.keysMap['addVolume'].concat(this.focusOptions.keysMap['addVolume'])))) : this.keysMap['addVolume'],
-          'subVolume': this.focusOptions.keysMap['subVolume'] ? [].concat(toConsumableArray(new Set(this.keysMap['subVolume'].concat(this.focusOptions.keysMap['subVolume'])))) : this.keysMap['subVolume']
-        };
+      if (options.focus && options.focus.keysMap) {
+        if (this.focusOptions.keysMapMergeCoverage) {
+          // options.focus.keysMap 覆盖默认keysMap
+          this.keysMap = Object.assign({}, this.keysMap, options.focus.keysMap);
+        } else {
+          // options.focus.keysMap 合并 默认keysmap
+          Object.keys(this.keysMap).forEach(function (key) {
+            // debugger
+            if (defaultFocusOptions.keysMap[key]) {
+              _this.keysMap[key].codes = options.focus.keysMap[key].codes ? [].concat(toConsumableArray(new Set(defaultFocusOptions.keysMap[key].codes.concat(options.focus.keysMap[key].codes)))) : _this.keysMap[key].codes;
+            } else {
+              _this.keysMap[key].codes = options.focus.keysMap[key].codes;
+            }
+          });
+        }
       }
+
       vm.focuser = this;
       this.vm = vm;
     }
@@ -596,11 +605,11 @@ var Focuser = function () {
   }, {
     key: 'execCommand',
     value: function execCommand(event) {
-      var _this = this;
+      var _this2 = this;
 
       Object.keys(this.keysMap).forEach(function (key) {
-        if (_this.keysMap[key].includes(event.keyCode)) {
-          _this.move(key, event);
+        if (_this2.keysMap[key].codes.includes(event.keyCode)) {
+          _this2.move(key, event);
         }
       });
     }
@@ -623,14 +632,15 @@ var Focuser = function () {
   }, {
     key: 'addFocusMap',
     value: function addFocusMap(key, node) {
-      var _this2 = this;
+      var _this3 = this;
 
+      this.tid++;
       var keys = key.split(/,\s*/);
       keys.forEach(function (item) {
-        if (item in _this2.focusElementMap) {
+        if (item in _this3.focusElementMap) {
           return console.warn('t-focus should be unique in one TVVM page but t-focus=' + item + ' has already exist');
         }
-        _this2.focusElementMap[item] = node;
+        _this3.focusElementMap[item] = node;
       });
     }
     // 设置焦点dom
@@ -654,17 +664,17 @@ var Focuser = function () {
   }, {
     key: 'generateIndexMap',
     value: function generateIndexMap() {
-      var _this3 = this;
+      var _this4 = this;
 
       // 0-0, 0-1, 
       Object.keys(this.focusElementMap).forEach(function (key) {
         var keyArr = key.split('-');
         var rowIndex = keyArr[0];
         var colIndex = keyArr[1];
-        if (_this3.indexMap[rowIndex] === undefined) {
-          _this3.indexMap[rowIndex] = [colIndex];
+        if (_this4.indexMap[rowIndex] === undefined) {
+          _this4.indexMap[rowIndex] = [colIndex];
         } else {
-          _this3.indexMap[rowIndex].push(colIndex);
+          _this4.indexMap[rowIndex].push(colIndex);
         }
       });
       this.indexMap = this.indexMap.map(function (item) {
@@ -776,7 +786,7 @@ var Focuser = function () {
   }, {
     key: 'moveUp',
     value: function moveUp(event, node, index) {
-      this.focusOptions.moveUpHandler(event, node, index);
+      this.keysMap['up'].handler && this.keysMap['up'].handler(event, node, index);
       if (this.isTopBoundary()) {
         if (this.focusOptions.circle.vertical) {
           var rowIndex = this.indexMap.length - 1;
@@ -799,6 +809,7 @@ var Focuser = function () {
   }, {
     key: 'moveDown',
     value: function moveDown(event, node, index) {
+      this.keysMap['down'].handler && this.keysMap['down'].handler(event, node, index);
       if (this.isBottomBoundary()) {
         if (this.focusOptions.circle.vertical) {
           var rowIndex = 0;
@@ -821,6 +832,7 @@ var Focuser = function () {
   }, {
     key: 'moveLeft',
     value: function moveLeft(event, node, index) {
+      this.keysMap['left'].handler && this.keysMap['left'].handler(event, node, index);
       if (this.isLeftBoundary()) {
         if (this.focusOptions.circle.horizontal) {
           var rowIndex = this.focusState.currentRowIndex;
@@ -844,6 +856,7 @@ var Focuser = function () {
   }, {
     key: 'moveRight',
     value: function moveRight(event, node, index) {
+      this.keysMap['right'].handler && this.keysMap['right'].handler(event, node, index);
       if (this.isRightBoundary()) {
         if (this.focusOptions.circle.horizontal) {
           var rowIndex = this.focusState.currentRowIndex;
@@ -870,19 +883,21 @@ var Focuser = function () {
     key: 'move',
     value: function move(direction, event) {
       var directionMap = {
-        'up': this.moveUp,
-        'down': this.moveDown,
-        'left': this.moveLeft,
-        'right': this.moveRight,
-        'enter': this.focusOptions.enterHandler,
-        'return': this.focusOptions.returnHandler,
-        'space': this.focusOptions.spaceHandler,
-        'home': this.focusOptions.homeHandler,
-        'menu': this.focusOptions.menuHandler,
-        'addVolume': this.focusOptions.addVolumeHandler,
-        'subVolume': this.focusOptions.subVolumeHandler
+        'up': {
+          handler: this.moveUp
+        },
+        'down': {
+          handler: this.moveDown
+        },
+        'left': {
+          handler: this.moveLeft
+        },
+        'right': {
+          handler: this.moveRight
+        }
       };
-      directionMap[direction].call(this, event, this.focusState.currentFocusElement, this.focusState.currentIndexString);
+      var runner = Object.assign({}, this.keysMap, directionMap);
+      runner[direction].handler.call(this, event, this.focusState.currentFocusElement, this.focusState.currentIndexString);
     }
   }]);
   return Focuser;

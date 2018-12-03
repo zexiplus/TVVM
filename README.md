@@ -126,12 +126,16 @@ data: { name: 'float' }
 
 ### 选项
 
+new TVVM接收一个选项对象作为唯一参数
+
 #### el
 
 new TVVM() 实例挂载的dom元素, 可以是一个元素查找符或者dom节点对象
 
 ```js
-el: '#tv'
+new TVVM({
+    el: '#tv',
+})
 ```
 
 
@@ -141,17 +145,56 @@ el: '#tv'
 tm单例的数据对象, 可以是一个函数或者对象, 当该参数为函数时, 取值为该函数的返回值
 
 ```js
-data: function () {
-    return {
-        title: 'tvvm demo page',
-        index: '0'
+new TVVM({
+    data: function () {
+        return {
+            title: 'tvvm demo page',
+            index: '0'
+        }
     }
-}
+})
 ```
 
 
 
 #### focus
+
+focus选项用于设置焦点移动， 键值绑定， 默认焦点等逻辑
+
+```js
+	new TVVM({
+        focus: {
+            defaultFocusIndex: '1-0',
+            keysMap: {
+              'up': {
+                codes: [38, 103],
+                handler: function (event, node, index, prevNode) {
+
+                }
+              },
+              'g': {
+                codes: [71],
+                handler: function (event, node, index, prevNode) {
+                  console.log('you press g')
+                }
+              },
+
+            },
+            keysMapMergeCoverage: false,
+            specialKeys: {
+              '11': function (event, node, index, prevNode) {
+
+              }
+            },
+            circle: {
+              horizontal: true,
+              vertical: true,
+            },
+          }
+    })
+```
+
+
 
 * **defaultFocusIndex (可选)**
 
@@ -181,6 +224,12 @@ data: function () {
 
   遥控器键盘键值码映射表,  该参数为空时使用默认键值码映射表
 
+  \- 'alias' 对应键值的别名
+
+   \- codes 对应键值数组
+
+    - handler 对应按键值绑定的事件处理函数 参数分别是event(事件), node(当前焦点dom节点索引), index (当前焦点dom节点的t-index值), prevNode(上一个焦点dom节点索引)
+
   * up 方向上键
   * down 方向下键
   * left 方向左键
@@ -196,43 +245,39 @@ data: function () {
   ```js
   focus: {
       keysMap: {
-          'up':[38],
-          'down': [40],
-          'left': [37],
-          'right': [39],
-          'enter':[13],
-          'space': [32],
-          'home': [36],
-          'menu': [18],
-          'return':[27],
-          'addVolume': [175],
-          'subVolume': [174]
+      'up': {
+        codes: [38, 104],
+        handler: blankFn
+      },
+      'down': {
+        codes: [40, 98],
+        handler: blankFn
+      },
+      'left': {
+        codes: [37, 100],
+        handler: blankFn
+      },
+      'right': {
+        codes: [39, 102],
+        handler: blankFn
+      },
+      'enter': {
+        codes: [13, 32],
+        handler: blankFn
       }
+    },
   }
   ```
 
-* **keysMergeOptions (可选)**
+* **keysMapMergeCoverage (可选)**
 
-  * **coverage** 键值映射表合并策略true为覆盖, false为合并
-
-    ```js
-    keysMergeOptions: {
-        coverage: false
-    }
-    ```
-
-* **specialKeys**
-
-  特殊按键码和对应按键的回调函数集合
+  键值映射表合并策略true为覆盖, false为合并
 
   ```js
-  specialKeys: {
-      '11': function (event, node, index, prevNode) {
-  
-      }
-  },
+  focus: {
+      keysMapMergeCoverage: false,
+  }
   ```
-
 
 
 #### methods
@@ -240,7 +285,11 @@ data: function () {
 该参数是一个对象, 存放所有的方法函数
 
 ```js
-meth
+methods: {
+    methods1: function () {
+        console.log('methods1')
+    }
+}
 ```
 
 
