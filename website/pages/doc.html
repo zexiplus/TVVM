@@ -11,7 +11,15 @@
   <link rel="stylesheet" href="../style/doc.css">
   <script src="../scripts/highlight.pack.js"></script>
   <script>hljs.initHighlightingOnLoad();</script>
-  <script src="../../dist/tvvm.js"></script>
+  <script>
+    var script = document.createElement('script')
+    if (location.hostname === 'zexiplus.github.io') {
+      script.src = 'https://unpkg.com/tvvm/dist/tvvm.min.js'
+    } else {
+      script.src = '../../dist/tvvm.js'
+    }
+    document.head.appendChild(script)
+  </script>
 </head>
 <body>
   <div id="doc">
@@ -375,20 +383,6 @@ focus: {
 
     </footer>
   </div>
-  <script>
-    new TVVM({
-      el: '#doc',
-      data: function () {
-        return {
-          navList: [
-            {title: '666', url: '123'}
-          ]
-        }
-      },
-      methods: {
-       
-      }
-    })
-  </script>
+  <script src="../scripts/doc.js"></script>
 </body>
 </html>
