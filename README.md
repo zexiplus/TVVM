@@ -3,7 +3,7 @@
 ![build](https://img.shields.io/badge/build-passing-green.svg)![no-dependency](https://img.shields.io/badge/no-dependency-yellow.svg)
 轻量级TV端WEB应用开发框架
 
-TVVM是一个专门为TV WEB APP开发的MVVM模式框架， 它帮助开发者快速开发应用而无需关心焦点控制， 键盘绑定， 数据绑定等通用逻辑。它没有依赖， 体型小巧（10kb）,  官方文档请参考 [offcial web]()
+TVVM是一个专门为TV WEB APP开发的MVVM模式框架， 它帮助开发者快速开发应用而无需关心焦点控制， 键盘绑定， 数据绑定等通用逻辑。它没有依赖， 体型小巧（10kb）,  官方文档请参考 [offcial web](https://zexiplus.github.io/site/tvvm/)
 
 
 
@@ -27,7 +27,7 @@ var tv = new TVVM({
 
 **手动下载**
 
-你也可以通过手动下载的方式， 然后通过`<script>`标签进行引用， [下载链接]()
+你也可以通过手动下载的方式， 然后通过`<script>`标签进行引用， [下载链接](https://unpkg.com/tvvm/dist/tvvm.min.js)
 
 ```html
 <script src="https://unpkg.com/tvvm/dist/tvvm.min.js"></script>
