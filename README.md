@@ -247,23 +247,25 @@ focus选项用于设置焦点移动， 键值绑定， 默认焦点等逻辑
       keysMap: {
       'up': {
         codes: [38, 104],
-        handler: blankFn
+            handler: function (event, node, index, prevNode) {
+                
+            }
       },
       'down': {
         codes: [40, 98],
-        handler: blankFn
+        handler
       },
       'left': {
         codes: [37, 100],
-        handler: blankFn
+        handler
       },
       'right': {
         codes: [39, 102],
-        handler: blankFn
+        handler
       },
       'enter': {
         codes: [13, 32],
-        handler: blankFn
+        handler
       }
     },
   }
