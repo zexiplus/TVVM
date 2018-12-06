@@ -1,8 +1,7 @@
 @media only screen and (max-width: 600px) {
   .left-nav {
     position: absolute;
-    visibility: hidden;
-    width: 0;
+    width: 0 !important;
   }
   .logo {
     display: none;
@@ -13,6 +12,27 @@
     line-height: 60px;
     padding-left: 20px;
     cursor: pointer;
+  }
+  .menu-hidden {
+    width: 0 !important;
+  }
+  .menu-show {
+    width: 200px !important;
+  }
+
+  .cloak {
+    position: fixed;
+    left: 0;
+    top: 61px;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+  .cloak-show {
+    display: block;
+  }
+  .cloak-hidden {
+    display: none;
   }
 }
 
@@ -38,20 +58,13 @@ h1, h2, h3, h4 {
   font-family: 'bebasneue';
   font-size: 14px;
   display: flex;
+  z-index: 1000;
   background-color: #fdfbfb;
   border-right: 1px solid #ebebeb;
   flex-direction: column;
   overflow-y: auto;
   overflow-x: hidden;
   transition: all .1s ease-in-out;
-}
-.menu-hidden {
-  visibility: hidden;
-  width: 0;
-}
-.menu-show {
-  visibility: visible;
-  width: 200px;
 }
 
 .nav-list-wrapper {
@@ -85,12 +98,31 @@ h1, h2, h3, h4 {
   text-indent: 4rem;
 }
 
-.content {
+.content-wrapper {
   padding: 0 1rem;
   box-sizing: border-box;
   width: 100%;
   height: calc(100vh - 61px);
   overflow: auto;
+  position: relative;
+}
+
+@media only screen and (min-width: 960px) and (max-width: 1600px) {
+  .content {
+    width: 700px !important;
+    margin: 0 auto !important;
+  }
+}
+
+@media only screen and (min-width: 1600px) {
+  .content {
+    width: 1000px !important;
+    margin: 0 auto !important;
+  }
+}
+
+.content {
+  width: 100%;
 }
 
 .content h1 {

@@ -1,8 +1,9 @@
 import Dep from "./dep";
 
 class Observer {
-  constructor(data) {
+  constructor(data, vm) {
     this.observer(data);
+    this.vm = vm
   }
 
   observer(data) {
@@ -35,10 +36,13 @@ class Observer {
           // 对新值继续劫持
           _this.observer(newValue);
           // 用新值替换旧值
+          _this.vm.callHook('beforeUpdate')
           value = newValue;
           // 发布通知
           dep.notify();
+          _this.vm.callHook('updated')
           // update
+          
         }
       }
     });

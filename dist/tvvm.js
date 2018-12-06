@@ -78,10 +78,11 @@
   }();
 
   var Observer = function () {
-    function Observer(data) {
+    function Observer(data, vm) {
       classCallCheck(this, Observer);
 
       this.observer(data);
+      this.vm = vm;
     }
 
     createClass(Observer, [{
@@ -121,9 +122,11 @@
               // 对新值继续劫持
               _this.observer(newValue);
               // 用新值替换旧值
+              _this.vm.callHook('beforeUpdate');
               value = newValue;
               // 发布通知
               dep.notify();
+              _this.vm.callHook('updated');
               // update
             }
           }
@@ -490,9 +493,7 @@
     return Compiler;
   }();
 
-  var blankFn = function blankFn(event, node, index, prevNode) {
-    console.log('blankfn');
-  };
+  var blankFn = function blankFn(event, node, index, prevNode) {};
   var defaultFocusOptions = {
     circle: {
       horizontal: false,
@@ -966,7 +967,7 @@
       // 初始化焦点管理对象
       new Focuser(this, options);
       // 初始化生命周期对象
-      new Lifecycle(options, this);
+      new Lifecycle(options.hooks || {}, this);
       // beforeCreate
       this.callHook('beforeCreate');
 
@@ -979,7 +980,7 @@
       // 把$el真实的dom节点编译成vdom, 并解析相关指令
       if (options.el) {
         // 数据劫持,
-        new Observer(this.$data);
+        new Observer(this.$data, this);
         // created
         this.callHook('created');
         // beforeMounte

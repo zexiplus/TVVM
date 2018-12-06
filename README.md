@@ -283,6 +283,7 @@ focus选项用于设置焦点移动， 键值绑定， 默认焦点等逻辑
   ```
 
 
+
 #### methods
 
 该参数是一个对象, 存放所有的方法函数
@@ -294,6 +295,54 @@ methods: {
     }
 }
 ```
+
+
+
+#### hooks
+
+生命周期钩子函数集合
+
+* beforeCreate
+
+  在实例化之前调用， 此时不可访问data
+
+* created
+
+  在实例化后调用，此时data已经设置响应式， 并可访问
+
+* beforeMount
+
+  在实例被挂在到真实dom前调用
+
+* mounted
+
+  在实例被挂在到dom上时调用
+
+* beforeUpdate
+
+  响应式data变动从而导致视图更新前调用
+
+* updated
+
+  响应式data变动从而导致视图更新后调用
+
+* beforeDestory
+
+  在实例被销毁前调用
+
+```js
+hooks: {
+    beforeCreate: function () {
+        // this 指向tv实例
+    },
+    mounted: function () {
+    	        
+    },
+    ...
+}
+```
+
+
 
 
 

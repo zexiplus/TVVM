@@ -1,5 +1,5 @@
 const blankFn = function (event, node, index, prevNode) {
-  console.log('blankfn')
+  
 }
 const defaultFocusOptions = {
   circle: {
