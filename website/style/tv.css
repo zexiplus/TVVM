@@ -7,12 +7,12 @@
 .tv {
   box-sizing: border-box;
   position: relative;
-  width: 375px;
-  height: 240px;
+  width: 350px;
+  height: 230px;
   display: flex;
   flex-direction: column;
-  border: 7px solid #777;
-  border-bottom: 15px solid #777;
+  border: 0.3rem solid #777;
+  border-bottom: 0.8rem solid #777;
   border-radius: 5px;
   margin: 50px auto;
   color: #fff;
@@ -28,7 +28,7 @@
   border-left: 3px solid transparent;
   border-right: 3px solid transparent;
   height: 0;
-  bottom: -40px;
+  bottom: -35px;
   left: 10rem;
   transform: rotate(60deg)
 }
@@ -42,7 +42,7 @@
   border-left: 3px solid transparent;
   border-right: 3px solid transparent;
   height: 0;
-  bottom: -40px;
+  bottom: -35px;
   right: 10rem;
   transform: rotate(-60deg)
 }

@@ -1,5 +1,5 @@
 /*!
- * tvvm.js v1.0.0
+ * tvvm v1.0.1
  * A simple micro-library for agile building TV web app with no dependency
  * 
  * Copyright (c) 2018 float <zexiplus@outlook.com>
@@ -998,9 +998,9 @@ var TVVM = function () {
             return data[key];
           },
           set: function set$$1(newValue) {
-            if (proxyTarget[key] !== undefined) {
-              console.warn('key ' + key + ' has already in Target');
-            }
+            // if (proxyTarget[key] !== undefined) {
+            //   console.warn(`key ${key} has already in Target`);
+            // }
             data[key] = newValue;
           }
         });

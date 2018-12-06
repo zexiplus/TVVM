@@ -7,6 +7,7 @@
   <title>TVVM</title>
   <link rel="stylesheet" href="./style/common.css">
   <link rel="stylesheet" href="./style/iconfont.css">
+  <link rel="stylesheet" href="./style/index.css">
   <link rel="stylesheet" href="./style/tv.css">
   <link rel="stylesheet" href="./style/tomorrow.css">
   <link rel="shortcut icon" href="./favicon.ico">
@@ -32,7 +33,7 @@
         <div class="header-block">
           <div class="user-info">{{userinfo.name}}</div>
           <div class="status-right">
-            <div class="circle net-status" t-index="0-0,0-1">
+            <div class="circle net-status" t-index="0-1">
               <i class="iconfont icon-wifi1"></i>
             </div>
             <div class="circle sys-message" t-index="0-2">
@@ -54,6 +55,15 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
+    <div class="control-wrapper">
+      <div class="remote-control">
+        <div class="power"></div>
+        <div class="compass">
+          <div class="enter"></div>
+        </div>
+        <div class="volume"></div>
       </div>
     </div>
     <footer class="footbar">

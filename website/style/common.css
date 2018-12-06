@@ -56,7 +56,8 @@ a:active {
 }
 
 .link-list {
-  margin-right: 50px;
+  margin-right: 20px;
+  margin-left: 20px;
   line-height: 60px;
 }
 .container {

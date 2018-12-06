@@ -6,6 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>TVVM</title>
   <link rel="stylesheet" href="../style/common.css" />
+  <link rel="stylesheet" href="../style/iconfont.css">
   <link rel="shortcut icon" href="../favicon.ico">
   <link rel="stylesheet" href="../style/mono-blue.css">
   <link rel="stylesheet" href="../style/doc.css">
@@ -18,6 +19,10 @@
   <div id="doc">
     <nav class="navbar">
       <div class="logo">TVVM</div>
+      <div class="menu-button" @touchstart="toggleMenu">
+        <i id="menu-button" class="iconfont icon-menu"></i>
+        <span style="margin-left: 10px;">TVVM</span>
+      </div>
       <div class="link-list">
         <a href="../index.html">Home</a>
         <span>/</span>
@@ -27,40 +32,43 @@
       </div>
     </nav>
     <div class="container">
-      <div class="left-nav">
-        <span class="link-title">
-          <a href="#start">开始</a>
-        </span>
-        <div class="link-group">
-          <a href="#desc">介绍</a>
-          <a href="#download">下载</a>
-          <a href="#usage">使用</a>
-        </div>
-        <span class="link-title">
-          <a href="#feature">特色</a>
-        </span>
-        <div class="link-group">
-          <a href="#focus-control">焦点控制</a>
-          <a href="#event-optmize">事件绑定优化</a>
-          <a href="#data-insert">数据插值</a>
-        </div>
-        <span class="link-title">
-          <a href="#api">API</a>
-        </span>
-        <div class="link-group">
-          <a href="#instance">实例化</a>
-          <a href="#directives">指令</a>
-          <div class="link-detail">
-            <a href="#t-if">t-if</a>
-            <a href="#t-for">t-for</a>
-            <a href="#data-bind">data bind</a>
+      <div class="left-nav menu-hidden">
+        <div class="nav-list-wrapper"> 
+          <span class="link-title">
+            <a href="#start">开始</a>
+          </span>
+          <div class="link-group">
+            <a href="#desc">介绍</a>
+            <a href="#download">下载</a>
+            <a href="#usage">使用</a>
           </div>
-          <a href="#options">选项</a>
-          <div class="link-detail">
-            <a href="#el">el</a>
-            <a href="#data">data</a>
-            <a href="#focus">focus</a>
-            <a href="#methods">methods</a>
+          <span class="link-title">
+            <a href="#feature">特色</a>
+          </span>
+          <div class="link-group">
+            <a href="#focus-control">焦点控制</a>
+            <a href="#event-optmize">事件绑定优化</a>
+            <a href="#data-insert">数据插值</a>
+          </div>
+          <span class="link-title">
+            <a href="#api">API</a>
+          </span>
+          <div class="link-group">
+            <a href="#instance">实例化</a>
+            <a href="#directives">指令</a>
+            <div class="link-detail">
+              <a href="#t-index">t-index</a>
+              <a href="#t-if">t-if</a>
+              <a href="#t-for">t-for</a>
+              <a href="#data-bind">data bind</a>
+            </div>
+            <a href="#options">选项</a>
+            <div class="link-detail">
+              <a href="#el">el</a>
+              <a href="#data">data</a>
+              <a href="#focus">focus</a>
+              <a href="#methods">methods</a>
+            </div>
           </div>
         </div>
       </div>

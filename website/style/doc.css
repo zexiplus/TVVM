@@ -1,8 +1,21 @@
 @media only screen and (max-width: 600px) {
   .left-nav {
-    width: 0 !important;
+    position: absolute;
+    visibility: hidden;
+    width: 0;
+  }
+  .logo {
+    display: none;
+  }
+  .menu-button {
+    display: block;
+    width: 100px !important;
+    line-height: 60px;
+    padding-left: 20px;
+    cursor: pointer;
   }
 }
+
 h1, h2, h3, h4 {
   color: #0048ab;
 }
@@ -11,6 +24,12 @@ h1, h2, h3, h4 {
   font-family: 'bebasneue';
   display: flex;
   flex-direction: row;
+  position: relative;
+}
+
+.menu-button {
+  width: 0;
+  overflow: hidden;
 }
 
 .left-nav {
@@ -23,7 +42,22 @@ h1, h2, h3, h4 {
   border-right: 1px solid #ebebeb;
   flex-direction: column;
   overflow-y: auto;
+  overflow-x: hidden;
+  transition: all .1s ease-in-out;
 }
+.menu-hidden {
+  visibility: hidden;
+  width: 0;
+}
+.menu-show {
+  visibility: visible;
+  width: 200px;
+}
+
+.nav-list-wrapper {
+  width: 200px;
+}
+
 .left-nav a {
   padding: 5px 10px;
   text-indent: 1rem;

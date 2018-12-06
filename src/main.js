@@ -44,9 +44,9 @@ class TVVM {
           return data[key];
         },
         set(newValue) {
-          if (proxyTarget[key] !== undefined) {
-            console.warn(`key ${key} has already in Target`);
-          }
+          // if (proxyTarget[key] !== undefined) {
+          //   console.warn(`key ${key} has already in Target`);
+          // }
           data[key] = newValue;
         }
       });
