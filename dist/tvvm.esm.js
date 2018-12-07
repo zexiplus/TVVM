@@ -287,7 +287,6 @@ var Compiler = function () {
       var _this = this;
 
       var childNodes = parentNode.childNodes;
-      // console.log('childNodes is', childNodes)
       childNodes.forEach(function (node, index) {
         // 不编译code代码节点
         if (node.tagName === 'CODE') return;
@@ -300,7 +299,7 @@ var Compiler = function () {
       });
     }
 
-    // 编译文本节点
+    // 编译文本节点, 待优化
 
   }, {
     key: "compileText",
@@ -316,33 +315,32 @@ var Compiler = function () {
         if (node.parentElement.getAttribute("t-for") || node.parentElement.getAttribute("is-t-for")) {} else {
           // 非t-for循环的替换逻辑
           var attrName = text.replace(reg, function () {
-            // 对每个{{}}之类的表达式增加增加一个watcher,参数为vm实例, expr表达式, 更新回调函数
             new Watcher(_this2.vm, arguments.length <= 1 ? undefined : arguments[1], function (value) {
               compileUtil.updateText(value, node, _this2.vm);
             });
             return arguments.length <= 1 ? undefined : arguments[1];
           });
           // 例如取出{{message}} 中的 message, 交给compileUtil.updateText 方法去查找vm.data的值并替换到节点
-          var textValue = this.splitData(attrName, this.vm.$data);
+          var textValue = this.getData(attrName, this.vm.$data);
           compileUtil.updateText(textValue, node, this.vm);
         }
       }
     }
 
-    // 剥离属性值
+    // 传入表达式， 获得属性值
 
   }, {
-    key: "splitData",
-    value: function splitData(attr, data) {
-      // 传入 attr 形如 'group.member.name', 找到$data上对应的属性值并返回
-      var arr = attr && attr.split(".");
+    key: "getData",
+    value: function getData(expr, data) {
+      // 传入 expr 形如 'group.member.name', 找到$data上对应的属性值并返回
+      var arr = expr && expr.split(".");
       var ret = arr.reduce(function (prev, next) {
         return prev[next];
       }, data);
       return ret;
     }
 
-    // 编译node节点
+    // 编译node节点 分析t指令， 待优化
 
   }, {
     key: "compileNode",
@@ -354,9 +352,10 @@ var Compiler = function () {
       var directiveAttrs = attrs.filter(function (attrname) {
         return _this3.isDirective(attrname) && !_this3.isTFocus(attrname);
       });
+
       directiveAttrs.forEach(function (item) {
         var expr = node.getAttribute(item); // 属性值
-        var value = _this3.splitData(expr, _this3.vm.$data);
+        var value = _this3.getData(expr, _this3.vm.$data);
         if (compileUtil[item]) {
           compileUtil[item](value, node, _this3.vm, expr);
         } else if (!_this3.isPrivateDirective(item) && !_this3.isEventBinding(item)) {
@@ -379,7 +378,7 @@ var Compiler = function () {
         var reg = /\(([^)]+)\)/;
         var hasParams = reg.test(expr);
         var fnName = expr.replace(reg, '');
-        var fn = _this3.splitData(fnName, _this3.vm.methods);
+        var fn = _this3.getData(fnName, _this3.vm.methods);
 
         if (node.getAttribute('is-t-for')) {
           // 是 t-for 循环生成的列表, 则事件绑定在父元素上
@@ -388,10 +387,10 @@ var Compiler = function () {
             if (event.target.getAttribute('is-t-for')) {
               if (hasParams) {
                 var params = expr.match(reg)[1].split(',').map(function (item) {
-                  return _this3.splitData(item.trim(), _this3.vm.$data);
+                  return _this3.getData(item.trim(), _this3.vm.$data);
                 });
                 // 取到 事件回调函数 的参数值
-                var param = _this3.splitData(event.target.getAttribute('t-scope'), _this3.vm.$data)[event.target.getAttribute('t-index')];
+                var param = _this3.getData(event.target.getAttribute('t-scope'), _this3.vm.$data)[event.target.getAttribute('t-index')];
                 fn.call(_this3.vm, param);
               } else {
                 fn.call(_this3.vm);
@@ -403,7 +402,7 @@ var Compiler = function () {
           if (hasParams) {
             // fn含有参数
             var params = expr.match(reg)[1].split(',').map(function (item) {
-              return _this3.splitData(item.trim(), _this3.vm.$data);
+              return _this3.getData(item.trim(), _this3.vm.$data);
             });
             node.addEventListener(eventName, fn.bind.apply(fn, [_this3.vm].concat(toConsumableArray(params))));
           } else {
@@ -432,16 +431,22 @@ var Compiler = function () {
 
   }, {
     key: "isDirective",
-    value: function isDirective(text) {
-      return text.includes("t-");
+    value: function isDirective(attrname) {
+      return attrname.includes("t-") || attrname.indexOf(':') === 0;
     }
 
     // 判断是否是t-index
 
   }, {
     key: "isTFocus",
-    value: function isTFocus(text) {
-      return text === 't-index';
+    value: function isTFocus(attrname) {
+      return attrname === 't-index';
+    }
+  }, {
+    key: "isTBind",
+    value: function isTBind(attrname) {
+      return (/(^t-bind:|^:)/.test(attrname)
+      );
     }
 
     // 根据传入的值， 如果是dom节点直接返回， 如果是选择器， 则返回相应的dom节点
@@ -651,13 +656,32 @@ var Focuser = function () {
         var arr = index.split('-');
         var currentRowIndex = Number(arr[0]);
         var currentColIndex = Number(arr[1]);
-        this.focusElementMap[index].focus();
+        var el = this.focusElementMap[index];
+        if (el.getAttribute('real-focus') === 'true') {
+          el.focus();
+        } else {
+          var activeClass = this.focusOptions.activeClass;
+          el.classList.add(activeClass);
+        }
         this.focusState.currentIndexString = index;
         this.focusState.currentFocusElement = this.focusElementMap[index];
         this.focusState.currentRowIndex = currentRowIndex;
         this.focusState.currentColIndex = currentColIndex;
       } else {
         // console.warn(`can't find t-focus ${index} node`)
+      }
+    }
+  }, {
+    key: 'removeFocus',
+    value: function removeFocus(index) {
+      if (index in this.focusElementMap) {
+        var el = this.focusElementMap[index];
+        if (el.getAttribute('real-focus') === 'true') {
+          el.blur();
+        } else {
+          var activeClass = this.focusOptions.activeClass;
+          el.classList.remove(activeClass);
+        }
       }
     }
   }, {
@@ -788,12 +812,14 @@ var Focuser = function () {
       this.keysMap['up'].handler && this.keysMap['up'].handler(event, node, index);
       if (this.isTopBoundary()) {
         if (this.focusOptions.circle.vertical) {
+          this.removeFocus(index);
           var rowIndex = this.indexMap.length - 1;
           var colIndex = this.focusState.currentColIndex;
           var indexString = [rowIndex, colIndex].join('-');
           this.setFocus(indexString);
         }
       } else {
+        this.removeFocus(index);
         var _rowIndex = this.focusState.currentRowIndex - 1;
         var _colIndex = this.focusState.currentColIndex;
         var _indexString = [_rowIndex, _colIndex].join('-');
@@ -811,12 +837,14 @@ var Focuser = function () {
       this.keysMap['down'].handler && this.keysMap['down'].handler(event, node, index);
       if (this.isBottomBoundary()) {
         if (this.focusOptions.circle.vertical) {
+          this.removeFocus(index);
           var rowIndex = 0;
           var colIndex = this.focusState.currentColIndex;
           var indexString = [rowIndex, colIndex].join('-');
           this.setFocus(indexString);
         }
       } else {
+        this.removeFocus(index);
         var _rowIndex2 = this.focusState.currentRowIndex + 1;
         var _colIndex2 = this.focusState.currentColIndex;
         var _indexString2 = [_rowIndex2, _colIndex2].join('-');
@@ -834,12 +862,14 @@ var Focuser = function () {
       this.keysMap['left'].handler && this.keysMap['left'].handler(event, node, index);
       if (this.isLeftBoundary()) {
         if (this.focusOptions.circle.horizontal) {
+          this.removeFocus(index);
           var rowIndex = this.focusState.currentRowIndex;
           var colIndex = this.indexMap[rowIndex][this.indexMap[rowIndex].length - 1];
           var indexString = [rowIndex, colIndex].join('-');
           this.setFocus(indexString);
         }
       } else {
+        this.removeFocus(index);
         var _rowIndex3 = this.focusState.currentRowIndex;
         var _colIndex3 = this.focusState.currentColIndex - 1;
         var _indexString3 = [_rowIndex3, _colIndex3].join('-');
@@ -858,12 +888,14 @@ var Focuser = function () {
       this.keysMap['right'].handler && this.keysMap['right'].handler(event, node, index);
       if (this.isRightBoundary()) {
         if (this.focusOptions.circle.horizontal) {
+          this.removeFocus(index);
           var rowIndex = this.focusState.currentRowIndex;
           var colIndex = this.indexMap[rowIndex][0];
           var indexString = [rowIndex, colIndex].join('-');
           this.setFocus(indexString);
         }
       } else {
+        this.removeFocus(index);
         var _rowIndex4 = this.focusState.currentRowIndex;
         var _colIndex4 = this.focusState.currentColIndex + 1;
         var _indexString4 = [_rowIndex4, _colIndex4].join('-');

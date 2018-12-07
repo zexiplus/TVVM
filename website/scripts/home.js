@@ -9,11 +9,12 @@ new TVVM({
   },
   focus: {
     defaultFocusIndex: '1-0',
+    activeClass: 'high-light',
     keysMap: {
       'up': {
         codes: [38],
         handler: function (event, node, index, prevNode) {
-          console.log('up?')
+          
         }
       },
       'g': {

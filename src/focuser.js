@@ -141,13 +141,31 @@ class Focuser {
       let arr = index.split('-')
       let currentRowIndex = Number(arr[0])
       let currentColIndex = Number(arr[1])
-      this.focusElementMap[index].focus()
+      let el = this.focusElementMap[index]
+      if (el.getAttribute('real-focus') === 'true') {
+        el.focus()
+      } else {
+        let activeClass = this.focusOptions.activeClass
+        el.classList.add(activeClass)
+      }
       this.focusState.currentIndexString = index
       this.focusState.currentFocusElement = this.focusElementMap[index]
       this.focusState.currentRowIndex = currentRowIndex
       this.focusState.currentColIndex = currentColIndex
     } else {
       // console.warn(`can't find t-focus ${index} node`)
+    }
+  }
+
+  removeFocus(index) {
+    if (index in this.focusElementMap) {
+      let el = this.focusElementMap[index]
+      if (el.getAttribute('real-focus') === 'true') {
+        el.blur()
+      } else {
+        let activeClass = this.focusOptions.activeClass
+        el.classList.remove(activeClass)
+      }
     }
   }
 
@@ -265,12 +283,14 @@ class Focuser {
     this.keysMap['up'].handler && this.keysMap['up'].handler(event, node, index)
     if (this.isTopBoundary()) {
       if (this.focusOptions.circle.vertical) {
+        this.removeFocus(index)
         let rowIndex = this.indexMap.length - 1
         let colIndex = this.focusState.currentColIndex
         let indexString = [rowIndex, colIndex].join('-')
         this.setFocus(indexString)
       }
     } else {
+      this.removeFocus(index)
       let rowIndex = this.focusState.currentRowIndex - 1
       let colIndex = this.focusState.currentColIndex
       let indexString = [rowIndex, colIndex].join('-')
@@ -287,12 +307,14 @@ class Focuser {
     this.keysMap['down'].handler && this.keysMap['down'].handler(event, node, index)
     if (this.isBottomBoundary()) {
       if (this.focusOptions.circle.vertical) {
+        this.removeFocus(index)
         let rowIndex = 0
         let colIndex = this.focusState.currentColIndex
         let indexString = [rowIndex, colIndex].join('-')
         this.setFocus(indexString)
       }
     } else {
+      this.removeFocus(index)
       let rowIndex = this.focusState.currentRowIndex + 1
       let colIndex = this.focusState.currentColIndex
       let indexString = [rowIndex, colIndex].join('-')
@@ -309,12 +331,14 @@ class Focuser {
     this.keysMap['left'].handler && this.keysMap['left'].handler(event, node, index)
     if (this.isLeftBoundary()) {
       if (this.focusOptions.circle.horizontal) {
+        this.removeFocus(index)
         let rowIndex = this.focusState.currentRowIndex
         let colIndex = this.indexMap[rowIndex][this.indexMap[rowIndex].length - 1]
         let indexString = [rowIndex, colIndex].join('-')
         this.setFocus(indexString)
       }
     } else {
+      this.removeFocus(index)
       let rowIndex = this.focusState.currentRowIndex
       let colIndex = this.focusState.currentColIndex - 1
       let indexString = [rowIndex, colIndex].join('-')
@@ -332,12 +356,14 @@ class Focuser {
     this.keysMap['right'].handler && this.keysMap['right'].handler(event, node, index)
     if (this.isRightBoundary()) {
       if (this.focusOptions.circle.horizontal) {
+        this.removeFocus(index)
         let rowIndex = this.focusState.currentRowIndex
         let colIndex = this.indexMap[rowIndex][0]
         let indexString = [rowIndex, colIndex].join('-')
         this.setFocus(indexString)
       }
     } else {
+      this.removeFocus(index)
       let rowIndex = this.focusState.currentRowIndex
       let colIndex = this.focusState.currentColIndex + 1
       let indexString = [rowIndex, colIndex].join('-')

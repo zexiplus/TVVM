@@ -17,7 +17,7 @@ var tv = new TVVM({
       })
     },
     updated: function () {
-      console.log('data updated')
+      
     }
   },
   data: function () {
@@ -27,6 +27,7 @@ var tv = new TVVM({
   },
   methods: {
     toggleMenu: function (event) {
+      event.preventDefault()
       var menu = document.querySelector('.left-nav')
       var button = document.querySelector('#menu-button')
       var cloak = document.querySelector('.cloak')

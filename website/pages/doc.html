@@ -20,7 +20,7 @@
   <div id="doc">
     <nav class="navbar">
       <div class="logo">TVVM</div>
-      <div class="menu-button" @touchstart="toggleMenu">
+      <div class="menu-button" @click="toggleMenu" @touchstart="toggleMenu">
         <i id="menu-button" class="iconfont icon-menu"></i>
         <span style="margin-left: 10px;">TVVM</span>
       </div>
@@ -381,7 +381,7 @@ focus: {
 
 
     </div>
-    <div class="cloak cloak-hidden" @touchstart="toggleMenu"></div>
+    <div class="cloak cloak-hidden" @click="toggleMenu" @touchstart="toggleMenu"></div>
     <footer class="footbar">
 
     </footer>
