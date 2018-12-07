@@ -1,5 +1,5 @@
 /*!
- * tvvm.js v1.0.0
+ * tvvm v1.0.2
  * A simple micro-library for agile building TV web app with no dependency
  * 
  * Copyright (c) 2018 float <zexiplus@outlook.com>
