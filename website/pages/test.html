@@ -48,7 +48,11 @@
           <li @click="testFn(item, message)" t-for="item in arr">{{item + 1}}</li>
         </ul>
         <input t-model="input.value" />
-        <span>{{input.value}}</span>
+        <span>{{input.value + 1}}</span>
+        <span>{{input.value + '1'}}</span>
+        <span>{{input.value * 2}}</span>
+        <span>{{input.value.toString()}}</span>
+        <span>{{input.value + message}}</span>
       </div>
     </div>
     <footer class="footbar">

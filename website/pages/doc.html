@@ -6,9 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>TVVM</title>
   <link rel="stylesheet" href="../style/common.css" />
+  <link rel="stylesheet" href="../style/iconfont.css">
   <link rel="shortcut icon" href="../favicon.ico">
   <link rel="stylesheet" href="../style/mono-blue.css">
   <link rel="stylesheet" href="../style/doc.css">
+  <script src="../scripts/bscroll.min.js"></script>
   <script src="../scripts/highlight.pack.js"></script>
   <script>hljs.initHighlightingOnLoad();</script>
   <script src="https://unpkg.com/tvvm/dist/tvvm.min.js"></script>
@@ -18,6 +20,10 @@
   <div id="doc">
     <nav class="navbar">
       <div class="logo">TVVM</div>
+      <div class="menu-button" @click="toggleMenu" @touchstart="toggleMenu">
+        <i id="menu-button" class="iconfont icon-menu"></i>
+        <span style="margin-left: 10px;">TVVM</span>
+      </div>
       <div class="link-list">
         <a href="../index.html">Home</a>
         <span>/</span>
@@ -28,66 +34,70 @@
     </nav>
     <div class="container">
       <div class="left-nav">
-        <span class="link-title">
-          <a href="#start">开始</a>
-        </span>
-        <div class="link-group">
-          <a href="#desc">介绍</a>
-          <a href="#download">下载</a>
-          <a href="#usage">使用</a>
-        </div>
-        <span class="link-title">
-          <a href="#feature">特色</a>
-        </span>
-        <div class="link-group">
-          <a href="#focus-control">焦点控制</a>
-          <a href="#event-optmize">事件绑定优化</a>
-          <a href="#data-insert">数据插值</a>
-        </div>
-        <span class="link-title">
-          <a href="#api">API</a>
-        </span>
-        <div class="link-group">
-          <a href="#instance">实例化</a>
-          <a href="#directives">指令</a>
-          <div class="link-detail">
-            <a href="#t-if">t-if</a>
-            <a href="#t-for">t-for</a>
-            <a href="#data-bind">data bind</a>
+        <div class="nav-list-wrapper"> 
+          <span class="link-title">
+            <a href="#start">开始</a>
+          </span>
+          <div class="link-group">
+            <a href="#desc">介绍</a>
+            <a href="#download">下载</a>
+            <a href="#usage">使用</a>
           </div>
-          <a href="#options">选项</a>
-          <div class="link-detail">
-            <a href="#el">el</a>
-            <a href="#data">data</a>
-            <a href="#focus">focus</a>
-            <a href="#methods">methods</a>
+          <span class="link-title">
+            <a href="#feature">特色</a>
+          </span>
+          <div class="link-group">
+            <a href="#focus-control">焦点控制</a>
+            <a href="#event-optmize">事件绑定优化</a>
+            <a href="#data-insert">数据插值</a>
+          </div>
+          <span class="link-title">
+            <a href="#api">API</a>
+          </span>
+          <div class="link-group">
+            <a href="#instance">实例化</a>
+            <a href="#directives">指令</a>
+            <div class="link-detail">
+              <a href="#t-index">t-index</a>
+              <a href="#t-if">t-if</a>
+              <a href="#t-for">t-for</a>
+              <a href="#data-bind">data bind</a>
+            </div>
+            <a href="#options">选项</a>
+            <div class="link-detail">
+              <a href="#el">el</a>
+              <a href="#data">data</a>
+              <a href="#focus">focus</a>
+              <a href="#methods">methods</a>
+            </div>
           </div>
         </div>
       </div>
-      <div class="content">
+
+      <div class="content-wrapper">
+        <div class="content">
         <h1 id="start">开始</h1>
+
         <h2 id="desc">介绍</h2>
-        <div class="block-content">
-          <span class="desc-text">
+        <span class="desc-text">
             TVVM是一个专门为TV WEB APP开发的MVVM模式框架， 它帮助开发者快速开发应用而无需关心焦点控制， 
             键盘绑定， 数据绑定等通用逻辑。
-            它没有依赖， 体型小巧（10kb）</span>
-        </div>
+            它没有依赖， 体型小巧（10kb）
+        </span>
+
         <h2 id="download">下载</h2>
-        <div class="block-content">
-          <h3>通过npm下载</h3>
-          <span class="desc-text">你的系统上需要安装有nodejs</span>
-          <pre>
-            <code class="bash">$ npm install -S tvvm</code>
-          </pre>
-        </div>
-        <div class="block-content">
-          <h3>手动下载</h3>
-          <span class="desc-text">
-            你也可以通过手动下载的方式， 然后通过&lt;script&gt;标签进行引用，
-            <a href="#">下载链接</a>
-          </span>
-        </div>
+        <h3>通过npm下载</h3>
+        <span class="desc-text">你的系统上需要安装有nodejs</span>
+        <pre>
+          <code class="bash">$ npm install -S tvvm</code>
+        </pre>
+
+        <h3>手动下载</h3>
+        <span class="desc-text">
+          你也可以通过手动下载的方式， 然后通过&lt;script&gt;标签进行引用，
+          <a href="#">下载链接</a>
+        </span>
+
         <h2 id="usage">使用</h2>
         <pre>
           <code class="javascript">
@@ -111,8 +121,7 @@
 
         <h1 id="api">API</h1>
         <h2 id="instance">实例化</h2>
-        <div class="block-content">
-          <div class="desc-text">new TVVM 返回一个tv实例, 作为该页面的全局单例入口</div>
+          <span class="desc-text">new TVVM 返回一个tv实例, 作为该页面的全局单例入口</span>
           <pre>
             <code class="javascript">
   var tv = new TVVM({
@@ -166,18 +175,18 @@
           </pre>
           <div class="block-content">
             <h3 id="t-if">t-if</h3>
-            <div class="desc-text">
+            <span class="desc-text">
                 用于显示/隐藏dom节点, 该指令接收一个在data参数上存在的布尔值
-            </div>
+            </span>
             <pre>
               <code class="html">
 &lt;div t-if=&quot;dialogVisible&quot;&gt;&lt;/div&gt;
               </code>
             </pre>
             <h3 id="t-for">t-for</h3>
-            <div class="desc-text">
+            <span class="desc-text">
                 用于循环指定的dom节点, 该指令接收一个表达式,如下item代表数组的每一项, array是data上定义的一个数组
-            </div>
+            </span>
             <pre>
               <code class="html">
 &lt;ul&gt;
@@ -186,9 +195,9 @@
               </code>
             </pre>
             <h3 id="data-bind">data bind</h3>
-            <div class="desc-text">
+            <span class="desc-text">
                 数据插值, 双花括号({{}})内接收一个data的属性.用于页面内数据插值
-            </div>
+            </span>
             <pre>
               <code class="javascript">
 data: { name: 'float' }
@@ -202,9 +211,9 @@ data: { name: 'float' }
           </div>
           
           <h2 id="options">选项</h2>
-          <div class="desc-text">
+          <span class="desc-text">
               new TVVM接收一个选项对象作为唯一参数
-          </div>
+          </span>
           <pre>
             <code class="javascript">
 var tv = new TVVM({
@@ -218,9 +227,9 @@ var tv = new TVVM({
           </pre>
           <div class="block-content">
             <h3 id="el">el</h3>
-            <div class="desc-text">
+            <span class="desc-text">
                 new TVVM() 实例挂载的dom元素, 可以是一个元素查找符或者dom节点对象
-            </div>
+            </span>
             <pre>
               <code class="javascript">
 new TVVM({
@@ -230,9 +239,9 @@ new TVVM({
             </pre>
 
             <h3 id="focus">focus</h3>
-            <div class="desc-text">
+            <span class="desc-text">
               focus选项用于设置焦点移动， 键值绑定， 默认焦点等逻辑
-            </div>
+            </span>
             <pre>
               <code class="javascript">
 new TVVM({
@@ -263,9 +272,9 @@ new TVVM({
             </pre>
 
             <h4 id="defaultFocusIndex">defaultFocusIndex (可选)</h4>
-            <div class="desc-text">
+            <span class="desc-text">
                 进入应用默认聚焦的元素的索引, 该参数为空时， 默认聚焦到页面首个焦点元素上
-            </div>
+            </span>
             <pre>
               <code class="javascript">
   focus: {
@@ -274,12 +283,12 @@ new TVVM({
               </code>
             </pre>
             <h4 id="circle">circle (可选)</h4>
-            <div class="desc-text">
+            <span class="desc-text">
               定义焦点在水平/垂直方向上是否可循环移动, 默认false. <br>
               - horizontal (可选) 焦点元素在水平方向是否可以循环移动, 默认false <br>
               - vertival (可选) 焦点元素在水平方向上是否可以循环移动, 默认false
               
-            </div>
+            </span>
             <pre>
               <code class="javascript">
   focus: {
@@ -292,12 +301,12 @@ new TVVM({
             </pre>
 
             <h4 id="keysMap">keysMap</h4>
-            <div class="desc-text">
+            <span class="desc-text">
                 遥控器键盘键值码映射表,  该参数为空时使用默认键值码映射表<br>
                 - 'alias' 对应键值的别名<br>
                 - codes 对应键值数组<br>
                 - handler 对应按键值绑定的事件处理函数 参数分别是event(事件), node(当前焦点dom节点索引), index (当前焦点dom节点的t-index值), prevNode(上一个焦点dom节点索引)
-            </div>
+            </span>
             <pre>
               <code class="javascript">
   focus: {
@@ -327,9 +336,9 @@ new TVVM({
               </code>
             </pre>
             <h4>keysMapMergeCoverage (可选)</h4>
-            <div class="desc-text">
+            <span class="desc-text">
                 键值映射表合并策略true为覆盖, false为合并
-            </div>
+            </span>
             <pre>
               <code class="javascript">
 focus: {
@@ -338,9 +347,9 @@ focus: {
               </code>
             </pre>
             <h3 id="data">data</h3>
-            <div class="desc-text">
+            <span class="desc-text">
                 tv单例的数据对象, 可以是一个函数或者对象, 当该参数为函数时, 取值为该函数的返回值
-            </div>
+            </span>
             <pre>
               <code class="javascript">
   new TVVM({
@@ -354,9 +363,9 @@ focus: {
               </code>
             </pre>
             <h3 id="methods">methods</h3>
-            <div class="desc-text">
+            <span class="desc-text">
                 该参数是一个对象, 存放所有的方法函数
-            </div>
+            </span>
             <pre>
               <code class="javascript">
   methods: {
@@ -372,6 +381,7 @@ focus: {
 
 
     </div>
+    <div class="cloak cloak-hidden" @click="toggleMenu" @touchstart="toggleMenu"></div>
     <footer class="footbar">
 
     </footer>

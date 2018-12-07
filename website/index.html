@@ -7,6 +7,7 @@
   <title>TVVM</title>
   <link rel="stylesheet" href="./style/common.css">
   <link rel="stylesheet" href="./style/iconfont.css">
+  <link rel="stylesheet" href="./style/index.css">
   <link rel="stylesheet" href="./style/tv.css">
   <link rel="stylesheet" href="./style/tomorrow.css">
   <link rel="shortcut icon" href="./favicon.ico">
@@ -20,7 +21,7 @@
     <nav class="navbar">
       <div class="logo">TVVM</div>
       <div class="link-list">
-        <a style="font-weight: bold;" href="Home">Home</a>
+        <a style="font-weight: bold;">Home</a>
         <span>/</span>
         <a href="./pages/doc.html">Doc</a>
         <span>/</span>
@@ -32,7 +33,7 @@
         <div class="header-block">
           <div class="user-info">{{userinfo.name}}</div>
           <div class="status-right">
-            <div class="circle net-status" t-index="0-0,0-1">
+            <div class="circle net-status" t-index="0-1">
               <i class="iconfont icon-wifi1"></i>
             </div>
             <div class="circle sys-message" t-index="0-2">
@@ -44,16 +45,50 @@
           </div>
         </div>
         <div class="block-container">
-          <div class="block block1" t-index="1-0, 2-0"></div>
+          <div class="block block-col block1" t-index="1-0, 2-0" real-focus="true">
+            <span>1-0,</span>
+            <span>2-0</span>
+          </div>
           <div class="block2">
-            <div class="block block2-1" t-index="1-1, 1-2, 1-3"></div>
+            <div class="block block-row block2-1" t-index="1-1, 1-2, 1-3">
+              <span>1-1,</span>
+              <span>1-2,</span>
+              <span>1-3</span>
+            </div>
             <div class="block2-2">
-              <div class="block block2-2-1" t-index="2-1"></div>
-              <div class="block block2-2-2" t-index="2-2"></div>
-              <div class="block block2-2-3" t-index="2-3"></div>
+              <div class="block block2-2-1" t-index="2-1">2-1</div>
+              <div class="block block2-2-2" t-index="2-2">2-2</div>
+              <div class="block block2-2-3" t-index="2-3">2-3</div>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+    <div class="control-wrapper">
+      <div class="remote-control">
+        <div class="power">
+          <i class="iconfont icon-power"></i>
+        </div>
+        <div class="compass">
+          <div class="enter">
+          </div>
+          <i class="iconfont arrow arrow-left icon-zuojiantou"></i>
+          <i class="iconfont arrow arrow-up icon-shangjiantou"></i>
+          <i class="iconfont arrow arrow-right icon-youjiantou"></i>
+          <i class="iconfont arrow arrow-down icon-xiajiantou"></i>
+        </div>
+        <div class="three-bar">
+          <div class="dot home">
+            <i class="iconfont icon-shouye"></i>
+          </div>
+          <div class="dot back">
+            <i class="iconfont icon-back"></i>
+          </div>
+          <div class="dot menu">
+            <i class="iconfont icon-menu"></i>
+          </div>
+        </div>
+        <!-- <div class="volume"></div> -->
       </div>
     </div>
     <footer class="footbar">

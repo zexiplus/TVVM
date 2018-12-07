@@ -1,0 +1,90 @@
+.control-wrapper {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+.remote-control {
+  width: 150px;
+  height: 250px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 0%, rgba(0, 0, 0, 0.35) 100%),
+  radial-gradient(at top center, rgba(255, 255, 255, 0.15) 0%, rgba(0, 0, 0, 0.60) 120%) #989898;
+  background-blend-mode: multiply,
+  multiply;
+  margin: 0 auto;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-direction: column;
+}
+
+.power {
+  margin-top: 10px;
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  color: rgb(160, 41, 41);
+  text-align: center;
+  line-height: 40px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+  background-image: radial-gradient(at center, rgba(70, 70, 70, 0.2) 0%, rgba(50, 50, 50, 0.3) 100%);
+}
+.compass {
+  width: 120px;
+  height: 120px;
+  position: relative;
+  border-radius: 60px;
+  background: radial-gradient(at center, rgba(0, 0, 0, 0.5) 0%, rgba(155, 155, 155, 0.1) 50%, rgba(0, 0, 0, 0.5) 100%);
+  background-blend-mode: screen;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.arrow {
+  color: rgba(188, 188, 188, 0.5);
+  position: absolute;
+}
+.arrow-left {
+  left: 5px;
+}
+.arrow-right {
+  right: 5px;
+}
+.arrow-up {
+  top: 5px;
+}
+.arrow-down {
+  bottom: 5px;
+}
+.enter {
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
+  background-image:radial-gradient(at center, rgba(155, 155, 155, 0.5) 0%, rgba(0, 0, 0, 0.5) 100%)
+  
+}
+.three-bar {
+  width: 90%;
+  display: flex;
+  color: rgba(188, 188, 188, 0.5);
+  flex-direction: row;
+  justify-content: space-around;
+}
+.dot {
+  width: 35px;
+  height: 35px;
+  border-radius: 15px;
+  text-align: center;
+  line-height: 35px;
+  background-image: radial-gradient(at center, rgba(70, 70, 70, 0.8) 0%, rgba(50, 50, 50, 0.6) 100%);
+}
+.volume {
+  margin-bottom: 10px;
+  width: 120px;
+  height: 30px;
+  border-radius: 15px;
+  background: purple;
+}

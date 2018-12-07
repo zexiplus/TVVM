@@ -10,7 +10,7 @@ class TVVM {
     // 初始化焦点管理对象
     new Focuser(this, options)
     // 初始化生命周期对象
-    new Lifecycle(options, this)
+    new Lifecycle(options.hooks || {}, this)
     // beforeCreate
     this.callHook('beforeCreate')
 
@@ -23,7 +23,7 @@ class TVVM {
     // 把$el真实的dom节点编译成vdom, 并解析相关指令
     if (options.el) {
       // 数据劫持,
-      new Observer(this.$data);
+      new Observer(this.$data, this);
       // created
       this.callHook('created')
       // beforeMounte
@@ -44,9 +44,9 @@ class TVVM {
           return data[key];
         },
         set(newValue) {
-          if (proxyTarget[key] !== undefined) {
-            console.warn(`key ${key} has already in Target`);
-          }
+          // if (proxyTarget[key] !== undefined) {
+          //   console.warn(`key ${key} has already in Target`);
+          // }
           data[key] = newValue;
         }
       });
