@@ -181,7 +181,7 @@ var compileUtil = {
   },
 
   //  在绑定有t-model节点的input上绑定事件, expr为t-model的表达式例如 'message.name'
-  't-model': function tModel(value, node, vm, expr) {
+  't-value': function tValue(value, node, vm, expr) {
     var _this = this;
 
     node && (node.value = value);
@@ -309,12 +309,14 @@ var Compiler = function () {
       var _this2 = this;
 
       // 测试文本节点含有 {{val}} 的 regexp
-      var reg = /\{\{([^}]+)\}\}/g;
+      var reg = /\{\{([^}]+)\}\}/;
       // 拿到文本节点的文本值
       var text = node.textContent;
       if (reg.test(text)) {
         // 去掉{{}} 保留 value
         if (node.parentElement.getAttribute("t-for") || node.parentElement.getAttribute("is-t-for")) {} else {
+          var matchArr = text.match(reg);
+          debugger;
           // 非t-for循环的替换逻辑
           var attrName = text.replace(reg, function () {
             new Watcher(_this2.vm, arguments.length <= 1 ? undefined : arguments[1], function (value) {
@@ -324,7 +326,9 @@ var Compiler = function () {
           });
           // 例如取出{{message}} 中的 message, 交给compileUtil.updateText 方法去查找vm.data的值并替换到节点
           var textValue = this.getData(attrName, this.vm.$data);
-          compileUtil.updateText(textValue, node, this.vm);
+          var fn = new Function('arg', "return " + attrName);
+          // let value = fn(this.vm.$data.)
+          // compileUtil.updateText(value, node, this.vm);
         }
       }
     }

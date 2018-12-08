@@ -6,7 +6,7 @@ const compileUtil = {
       node && (node.textContent = text)
     },
     //  在绑定有t-model节点的input上绑定事件, expr为t-model的表达式例如 'message.name'
-    't-model': function (value, node, vm, expr) {
+    't-value': function (value, node, vm, expr) {
       node && (node.value = value)
       node.addEventListener('input', (e) => {
         this.setVal(vm.$data, expr, e.target.value)

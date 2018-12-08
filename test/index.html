@@ -1,60 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>TVVM</title>
-  <script src="../dist/tvvm.js"></script>
+  <title>TVVM test page</title>
+  <link rel="shortcut icon" href="../favicon.ico">
+  <script src="../../dist/tvvm.js"></script>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      border: 0;
+    
+    *:focus {
+      border: 1px solid red;
     }
 
-    .navbar {
-      height: 80px;
-      width: 100%;
-      background-color: aliceblue;
-      border-bottom: 1px solid #dcdcdc;
-      display: flex;
+    .test-block {
+      margin: 1rem;
+      padding: 2rem;
+      padding-top: 1rem;
+      border: 1px solid #000;
     }
 
-    .footbar {}
+    .test-block span:first-child {
+      display: block;
+      margin: 0 auto;
+      margin-bottom: 1rem;
+      font-weight: bold;
+      text-align: center;
+    }
 
-    .tv {
-      width: 600px;
-      height: 400px;
-      border: 1px solid aqua;
+    .index-block {
+      border: 1px solid #000;
+      width: 200px;
+      height: 100px;
+      margin: 10px;
+    }
+    .high-light {
+      border: 1px solid red;
     }
   </style>
 </head>
-
 <body>
   <div id="app">
-    <nav class="navbar">
+    <div class="container" style="height: 100%;">
 
-    </nav>
-    <div id="main-view"></div>
-    <div class="tv">
+      <!-- t-if test -->
+      <div class='test-block'>
+        <span>t-if test</span>
+        <div t-if="display">t-if="display"</div>
+      </div>
 
+      <!-- t-bind test -->
+      <div class='test-block'>
+        <span>t-bind test</span>
+        <div :id="id" t-bind:name="name">:id="id" t-bind:name="name"</div>
+      </div>
+
+      <!-- t-class test -->
+      <div class='test-block'>
+        <span>t-class test</span>
+        <div t-class="classList">t-class="classList"</div>
+        <div t-class="classList2">t-class="classList2"</div>
+      </div>
+
+      <!-- t-index test -->
+      <div class='test-block'>
+        <span>t-index test</span>
+        <div style="display: flex; flex-direction: row;">
+          <div t-index="0-0, 1-0" real-focus="true" class="index-block" style="height: 200px">t-index="0-0, 1-0"</div>
+          <div t-index="0-1, 1-1" real-focus="true" class="index-block" style="height: 200px">t-index="0-1, 1-1"</div>
+          <div>
+            <div t-index="0-2" class="index-block">
+                t-index="0-2"
+            </div>
+            <div t-index="1-2" class="index-block">
+                t-index="1-2"
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- t-for test -->
+      <div class="test-block">
+        <span>t-for test</span>
+        <ul style="list-style: none;">
+          <li @click="testFn(item, message)" t-for="item in arr">{{item + 1}}</li>
+        </ul>
+      </div>
+
+      <!-- t-value test -->
+      <div class="test-block">
+        <span>t-value test</span>
+        <input t-value="input.value" />
+        <span>{{input.value}}</span>
+      </div>
+
+      <!-- {{}} test -->
+      <div class="test-block">
+        <span>{{}} test</span>
+        <span>{{input.value}}</span>
+        <span>{{input.value + 1}}</span>
+        <span>{{input.value + '1'}}</span>
+        <span>{{input.value * 2}}</span>
+        <span>{{input.value.toString()}}</span>
+        <span>{{input.value + message}}</span>
+      </div>
     </div>
-    <footer class="footbar">
 
-    </footer>
   </div>
   <script>
     new TVVM({
       el: '#app',
       data: function () {
         return {
-          message: 'hello'
+          // t-if test
+          display: true,
+          // t-bind test
+          id: 'bind-id',
+          name: 'bind-name',
+          // t-class test
+          classList: ['apple', 'banana', 'cate'],
+          classList2: {
+            'apple': true,
+            'banana': false,
+            'cate': true
+          },
+          // t-for test
+          arr: [1,2,3,4],
+          // t-value test
+          input: {
+            value: '2341234'
+          },
         }
-      }
+      },
+      methods: {
+        testFn: function (a, b) {
+          console.log('click num is', a, b)
+        }
+      },
+      focus: {
+        activeClass: 'high-light'
+      },
+      hooks: {
+        beforeCreate: function () {
+          console.log('this.message', this.message)
+        },
+        created: function () {
+          console.log('this.message', this.message)
+        },
+        beforeMount: function () {
+          console.log('this.$el', this.$el)
+        },
+        mounted: function () {
+          console.log('this.$el', this.$el)
+        },
+        beforeUpdate: function () {
+
+        },
+        updated: function () {
+
+        }
+      },
     })
   </script>
 </body>
-
 </html>

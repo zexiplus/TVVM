@@ -55,7 +55,7 @@ class Compiler {
   // 编译文本节点, 待优化
   compileText(node) {
     // 测试文本节点含有 {{val}} 的 regexp
-    let reg = /\{\{([^}]+)\}\}/;
+    let reg = /\{\{([^}]+)\}\}/g;
     // 拿到文本节点的文本值
     let text = node.textContent;
     if (reg.test(text)) {
@@ -63,8 +63,6 @@ class Compiler {
       if (node.parentElement.getAttribute("t-for") || node.parentElement.getAttribute("is-t-for")) {
 
       } else {
-        let matchArr = text.match(reg)
-        debugger
         // 非t-for循环的替换逻辑
         let attrName = text.replace(reg, (...args) => {
           // 对每个{{}}之类的表达式增加增加一个watcher,参数为vm实例, expr表达式, 更新回调函数
@@ -76,9 +74,7 @@ class Compiler {
         });
         // 例如取出{{message}} 中的 message, 交给compileUtil.updateText 方法去查找vm.data的值并替换到节点
         let textValue = this.getData(attrName, this.vm.$data);
-        let fn = new Function('arg', `return ${attrName}`)
-        // let value = fn(this.vm.$data.)
-        // compileUtil.updateText(value, node, this.vm);
+        compileUtil.updateText(textValue, node, this.vm);
       }
     }
   }
