@@ -13,12 +13,30 @@ const compileUtil = {
       })
     },
     't-if': function (value, node, vm, expr) {
-      const originalDisplay = window.getComputedStyle(node)
-      node && (node.style.display = value ? originalDisplay : 'none')
+      // const originalDisplay = node.style.display || 'block'
+      node && (node.style.display = value ? 'block' : 'none')
     },
     't-show': function (value, node, vm, expr) {
       const originalVisible = window.getComputedStyle(node)
       node && (node.style.visibility = value ? originalVisible : 'hidden')
+    },
+    't-class': function (value, node, vm, expr) {
+      if (Array.isArray(value)) {
+        value.forEach(item => {
+          node.classList.add(item)
+        })
+      } else if (({}).toString.call(value) === '[object Object]') {
+        node.classList = []
+        Object.keys(value).forEach(classname => {
+          if (value[classname]) {
+            node.classList.add(classname)
+          } else {
+            node.classList.remove(classname)
+          }
+        })
+      } else {
+        console.warn('t-class must receive an array or object')
+      }
     },
     't-for': function (value, node, vm, expr) {
       // 截取 in 后的数组表达式

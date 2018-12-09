@@ -37,6 +37,19 @@
     .high-light {
       border: 1px solid red;
     }
+    .apple {
+      background-color: red;
+    }
+    .banana {
+      color: yellow;
+    }
+    .cate {
+      font-weight: bold;
+    }
+    .dog {
+      border: 1px solid #000;
+    }
+
   </style>
 </head>
 <body>
@@ -46,20 +59,24 @@
       <!-- t-if test -->
       <div class='test-block'>
         <span>t-if test</span>
-        <div t-if="display">t-if="display"</div>
+        <button @click="methods.handleDisplay">display</button>
+        <button @click="methods.handleHidden">hidden</button>
+        <div t-if="data.display">t-if="data.display"</div>
       </div>
 
       <!-- t-bind test -->
       <div class='test-block'>
         <span>t-bind test</span>
-        <div :id="id" t-bind:name="name">:id="id" t-bind:name="name"</div>
+        <div :id="data.id" t-bind:name="data.name">:id="data.id" t-bind:name="data.name"</div>
       </div>
 
       <!-- t-class test -->
       <div class='test-block'>
         <span>t-class test</span>
-        <div t-class="classList">t-class="classList"</div>
-        <div t-class="classList2">t-class="classList2"</div>
+        <button @click="methods.addClass">add class</button>
+        <button @click="methods.deleteClass">del class</button>
+        <div t-class="data.classList">t-class="data.classList"</div>
+        <div t-class="data.classList2">t-class="data.classList2"</div>
       </div>
 
       <!-- t-index test -->
@@ -80,29 +97,32 @@
       </div>
 
       <!-- t-for test -->
-      <div class="test-block">
+      <!-- <div class="test-block">
         <span>t-for test</span>
         <ul style="list-style: none;">
-          <li @click="testFn(item, message)" t-for="item in arr">{{item + 1}}</li>
+          <li @click="methods.testFn(item, message)" t-for="item in data.arr">{{item + 1}}</li>
         </ul>
-      </div>
+      </div> -->
 
       <!-- t-value test -->
       <div class="test-block">
         <span>t-value test</span>
-        <input t-value="input.value" />
-        <span>{{input.value}}</span>
+        <input t-value="data.input.value" />
+        <span>{{data.input.value}}</span>
+        <input t-value="data.name" />
+        <span>{{data.name}}</span>
       </div>
 
       <!-- {{}} test -->
       <div class="test-block">
-        <span>{{}} test</span>
-        <span>{{input.value}}</span>
-        <span>{{input.value + 1}}</span>
-        <span>{{input.value + '1'}}</span>
-        <span>{{input.value * 2}}</span>
-        <span>{{input.value.toString()}}</span>
-        <span>{{input.value + message}}</span>
+        <span>{{}} test</span><br>
+        <span>{{data.input.value.toString()}}</span><br>
+        <span>{{data.input.value + data.name}}</span><br>
+        <span>{{Number(data.input.value)}}</span><br>
+        <span>{{data.input.value}}</span><br>
+        <span>{{data.input.value + 1}}</span><br>
+        <span>{{data.input.value + '1'}}</span><br>
+        <span>{{data.input.value * 2}}</span><br>
       </div>
     </div>
 
@@ -112,6 +132,7 @@
       el: '#app',
       data: function () {
         return {
+          num: 0,
           // t-if test
           display: true,
           // t-bind test
@@ -133,6 +154,18 @@
         }
       },
       methods: {
+        addClass: function () {
+          this.classList = this.classList.concat('dog')
+        },
+        deleteClass: function () {
+          this.classList2 = {}
+        },
+        handleDisplay: function () {
+          this.display = true
+        },
+        handleHidden: function () {
+          this.display = false
+        },
         testFn: function (a, b) {
           console.log('click num is', a, b)
         }

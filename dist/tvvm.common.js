@@ -133,11 +133,12 @@ var Observer = function () {
 }();
 
 var Watcher = function () {
-  function Watcher(vm, expr, cb) {
+  function Watcher(vm, tag, expr, cb) {
     classCallCheck(this, Watcher);
 
     this.vm = vm;
-    this.expr = expr;
+    this.tag = tag; // e.g input.value
+    this.expr = expr; // e.g data.input.value + data.message
     this.cb = cb;
     // 在new Watcher时保存初始值
     this.value = this.getValAndSetTarget();
@@ -147,14 +148,14 @@ var Watcher = function () {
     key: "getValAndSetTarget",
     value: function getValAndSetTarget() {
       Dep.target = this;
-      var value = this.getValue(this.expr);
+      var value = this.getValue(this.tag);
       Dep.target = null;
       return value;
     }
   }, {
     key: "getValue",
-    value: function getValue(expr) {
-      var arr = expr.split(".");
+    value: function getValue(tag) {
+      var arr = tag.split(".");
       return arr.reduce(function (prev, next) {
         return prev[next];
       }, this.vm.$data);
@@ -163,10 +164,8 @@ var Watcher = function () {
     key: "update",
     value: function update() {
       var oldVal = this.value;
-      var newVal = this.getValue(this.expr);
-      if (oldVal !== newVal) {
-        this.cb && this.cb(newVal);
-      }
+      var newVal = this.getValue(this.tag);
+      this.cb && this.cb(newVal);
     }
   }]);
   return Watcher;
@@ -190,12 +189,30 @@ var compileUtil = {
     });
   },
   't-if': function tIf(value, node, vm, expr) {
-    var originalDisplay = window.getComputedStyle(node);
-    node && (node.style.display = value ? originalDisplay : 'none');
+    // const originalDisplay = node.style.display || 'block'
+    node && (node.style.display = value ? 'block' : 'none');
   },
   't-show': function tShow(value, node, vm, expr) {
     var originalVisible = window.getComputedStyle(node);
     node && (node.style.visibility = value ? originalVisible : 'hidden');
+  },
+  't-class': function tClass(value, node, vm, expr) {
+    if (Array.isArray(value)) {
+      value.forEach(function (item) {
+        node.classList.add(item);
+      });
+    } else if ({}.toString.call(value) === '[object Object]') {
+      node.classList = [];
+      Object.keys(value).forEach(function (classname) {
+        if (value[classname]) {
+          node.classList.add(classname);
+        } else {
+          node.classList.remove(classname);
+        }
+      });
+    } else {
+      console.warn('t-class must receive an array or object');
+    }
   },
   't-for': function tFor(value, node, vm, expr) {
     // 截取 in 后的数组表达式
@@ -315,20 +332,33 @@ var Compiler = function () {
       if (reg.test(text)) {
         // 去掉{{}} 保留 value
         if (node.parentElement.getAttribute("t-for") || node.parentElement.getAttribute("is-t-for")) {} else {
-          var matchArr = text.match(reg);
-          debugger;
-          // 非t-for循环的替换逻辑
-          var attrName = text.replace(reg, function () {
-            new Watcher(_this2.vm, arguments.length <= 1 ? undefined : arguments[1], function (value) {
-              compileUtil.updateText(value, node, _this2.vm);
-            });
-            return arguments.length <= 1 ? undefined : arguments[1];
-          });
+          // 捕获{{expr}} 双花括号中的表达式
+          var expr = text.match(reg)[1];
+          // 捕获data的属性表达式
+          var dataAttrReg = /data(\.[a-zA-Z_]+[a-zA-Z_\d]*)+(\(\))*/g;
+          var watcherList = expr.match(dataAttrReg);
+          var methodReg = /\.([a-zA-Z_]+[a-zA-Z_\d])+(\(\))/;
+
           // 例如取出{{message}} 中的 message, 交给compileUtil.updateText 方法去查找vm.data的值并替换到节点
-          var textValue = this.getData(attrName, this.vm.$data);
-          var fn = new Function('arg', "return " + attrName);
-          // let value = fn(this.vm.$data.)
-          // compileUtil.updateText(value, node, this.vm);
+          // let textValue = this.getData(attrName, this.vm.$data);
+          var execFn = new Function('data', "return " + expr);
+          var data = this.vm.$data;
+          var value = execFn(data);
+          compileUtil.updateText(value, node, this.vm);
+
+          // 给每个attribute上设置watcher
+          watcherList = watcherList.map(function (item) {
+            var attr = item.replace(methodReg, '');
+            attr = attr.split('.').slice(1).join('.');
+            new Watcher(_this2.vm, attr, expr, function (value) {
+              var expr = this.expr;
+              var execFn = new Function('data', "return " + expr);
+              var data = this.vm.$data;
+              var val = execFn(data);
+              compileUtil.updateText(val, node, this.vm);
+            });
+            return attr;
+          });
         }
       }
     }
@@ -361,6 +391,10 @@ var Compiler = function () {
 
       directiveAttrs.forEach(function (item) {
         var expr = node.getAttribute(item); // 属性值
+        expr = expr.split('.').slice(1).join('.');
+        new Watcher(_this3.vm, expr, expr, function (value) {
+          compileUtil[item](value, node, _this3.vm, expr);
+        });
         var value = _this3.getData(expr, _this3.vm.$data);
         if (compileUtil[item]) {
           compileUtil[item](value, node, _this3.vm, expr);
@@ -384,7 +418,7 @@ var Compiler = function () {
         var reg = /\(([^)]+)\)/;
         var hasParams = reg.test(expr);
         var fnName = expr.replace(reg, '');
-        var fn = _this3.getData(fnName, _this3.vm.methods);
+        var fn = _this3.getData(fnName, _this3.vm);
 
         if (node.getAttribute('is-t-for')) {
           // 是 t-for 循环生成的列表, 则事件绑定在父元素上
@@ -447,6 +481,11 @@ var Compiler = function () {
     key: "isTFocus",
     value: function isTFocus(attrname) {
       return attrname === 't-index';
+    }
+  }, {
+    key: "isTFor",
+    value: function isTFor(attrname) {
+      return attrname === 't-for';
     }
   }, {
     key: "isTBind",

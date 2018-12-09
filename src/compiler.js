@@ -63,22 +63,33 @@ class Compiler {
       if (node.parentElement.getAttribute("t-for") || node.parentElement.getAttribute("is-t-for")) {
 
       } else {
-        let matchArr = text.match(reg)
-        debugger
-        // 非t-for循环的替换逻辑
-        let attrName = text.replace(reg, (...args) => {
-          // 对每个{{}}之类的表达式增加增加一个watcher,参数为vm实例, expr表达式, 更新回调函数
-          let expr = args[1]
-          new Watcher(this.vm, args[1], value => {
-            compileUtil.updateText(value, node, this.vm);
-          });
-          return args[1];
-        });
+        // 捕获{{expr}} 双花括号中的表达式
+        let expr = text.match(reg)[1]
+        // 捕获data的属性表达式
+        let dataAttrReg = /data(\.[a-zA-Z_]+[a-zA-Z_\d]*)+(\(\))*/g;
+        let watcherList = expr.match(dataAttrReg)
+        let methodReg = /\.([a-zA-Z_]+[a-zA-Z_\d])+(\(\))/
+
         // 例如取出{{message}} 中的 message, 交给compileUtil.updateText 方法去查找vm.data的值并替换到节点
-        let textValue = this.getData(attrName, this.vm.$data);
-        let fn = new Function('arg', `return ${attrName}`)
-        // let value = fn(this.vm.$data.)
-        // compileUtil.updateText(value, node, this.vm);
+        // let textValue = this.getData(attrName, this.vm.$data);
+        let execFn = new Function('data', `return ${expr}`)
+        let data = this.vm.$data
+        let value = execFn(data)
+        compileUtil.updateText(value, node, this.vm);
+
+        // 给每个attribute上设置watcher
+        watcherList = watcherList.map(item => {
+          let attr = item.replace(methodReg, '')
+          attr = attr.split('.').slice(1).join('.')
+          new Watcher(this.vm, attr, expr , function(value) {
+            let expr = this.expr
+            let execFn = new Function('data', `return ${expr}`)
+            let data = this.vm.$data
+            let val = execFn(data)
+            compileUtil.updateText(val, node, this.vm);
+          })
+          return attr
+        })
       }
     }
   }
@@ -103,6 +114,10 @@ class Compiler {
 
     directiveAttrs.forEach(item => {
       let expr = node.getAttribute(item); // 属性值
+      expr = expr.split('.').slice(1).join('.')
+      new Watcher(this.vm, expr, expr, (value) => {
+        compileUtil[item](value, node, this.vm, expr);
+      })
       let value = this.getData(expr, this.vm.$data);
       if (compileUtil[item]) {
         compileUtil[item](value, node, this.vm, expr);
@@ -126,7 +141,7 @@ class Compiler {
       let reg = /\(([^)]+)\)/
       let hasParams = reg.test(expr)
       let fnName = expr.replace(reg, '')
-      let fn = this.getData(fnName, this.vm.methods)
+      let fn = this.getData(fnName, this.vm)
 
       if (node.getAttribute('is-t-for')) { // 是 t-for 循环生成的列表, 则事件绑定在父元素上
         let parentElement = node.parentElement
@@ -175,6 +190,10 @@ class Compiler {
   // 判断是否是t-index
   isTFocus(attrname) {
     return attrname === 't-index'
+  }
+
+  isTFor(attrname) {
+    return attrname === 't-for'
   }
 
   isTBind(attrname) {
