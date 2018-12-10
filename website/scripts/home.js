@@ -7,6 +7,52 @@ new TVVM({
       }
     }
   },
+  methods: {
+    handleScroll: function (event) {
+      console.log(event)
+    },
+    createPressEvent: function (keyCode) {
+      var customEvent = new Event('keydown', {bubbles: true, cancelable: true})
+      customEvent.keyCode = keyCode
+      window.dispatchEvent(customEvent)
+    },
+    pressPower: function (e) {
+      e.preventDefault()
+      this.createPressEvent(71)
+    },
+    pressEnter: function (e) {
+      e.preventDefault()
+      this.createPressEvent(13)
+    },
+    pressLeft: function (e) {
+      e.preventDefault()
+      this.createPressEvent(37)
+    },
+    pressUp: function(e) {
+      e.preventDefault()
+      this.createPressEvent(38)
+    },
+    pressRight: function(e) {
+      e.preventDefault()
+      this.createPressEvent(39)
+    },
+    pressDown: function(e) {
+      e.preventDefault()
+      this.createPressEvent(40)
+    },
+    pressHome: function(e) {
+      e.preventDefault()
+      this.createPressEvent(36)
+    },
+    pressBack: function(e) {
+      e.preventDefault()
+      this.createPressEvent(27)
+    },
+    pressMenu: function(e) {
+      e.preventDefault()
+      this.createPressEvent(18)
+    },
+  },
   focus: {
     defaultFocusIndex: '1-0',
     activeClass: 'high-light',
@@ -17,10 +63,10 @@ new TVVM({
           
         }
       },
-      'g': {
+      'shutdown': {
         codes: [71],
-        handler: function (event, node, index, prevNode) {
-          console.log('you press g')
+        handler: function () {
+          console.log('shutdonw')
         }
       },
       'down': {
@@ -53,30 +99,26 @@ new TVVM({
       'return': {
         codes: [27],
         handler: function (event, node, index, prevNode) {
-
+          console.log('back')
         }
       },
-      'addVolume': {
-        codes: [133],
+      'home': {
+        codes: [36],
+        handler: function () {
+          console.log('home')
+        }
+      },
+      'menu': {
+        codes: [18],
         handler: function (event, node, index, prevNode) {
-
+          console.log('menu')
         }
       },
     },
     keysMapMergeCoverage: false,
-    specialKeys: {
-      '11': function (event, node, index, prevNode) {
-
-      }
-    },
     circle: {
       horizontal: true,
       vertical: true,
     },
-  },
-  methods: {
-    testFn: function (a, b) {
-      console.log('click num is', a, b)
-    }
   }
 })

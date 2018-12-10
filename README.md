@@ -448,6 +448,30 @@ data: function () {
 
 
 
+#### event bind
+
+事件绑定
+
+```js
+methods: {
+    clickHandler: function () {
+        // do something
+    },
+    clickHandler2: function (param1, param2) {
+    	     
+    }
+}
+```
+
+```html
+<div @click="methods.clickHandler"></div>
+<div @click="methods.clickHandler2(data.inputValue)"
+```
+
+
+
+
+
 
 ## 协议
 
