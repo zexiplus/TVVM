@@ -1,14 +1,14 @@
 import Watcher from "./watcher";
 import compileUtil from "./compileUtil";
 
-const privateDirectives = ['is-t-for', 't-index', 't-scope', 't-itemname'];
+const privateDirectives = ["is-t-for", "t-index", "t-scope", "t-itemname"];
 const REG_STRING_MAP = {
-  'T_BIND': '(^t-bind:|^:)',
-  'EVENT_BIND':  '^@',
-  'DATA_BIND': '\{\{([^}]+)\}\}', // 数据绑定 e.g {{expression}}
-  'JAVASCRIPT_VARIABLE': '^[a-zA-Z_]+[a-zA-Z_\d]*',    // javascript合法变量名 e.g name , age...
-  'JAVASCRIPT_EXPRESSION': '(^[a-zA-Z_]+[a-zA-Z_\d]*)(\.[a-zA-Z_]+[a-zA-Z\d]*)*', // javascript属性值表达式 e.g person.info.age
-}
+  T_BIND: "(^t-bind:|^:)",
+  EVENT_BIND: "^@",
+  DATA_BIND: "{{([^}]+)}}", // 数据绑定 e.g {{expression}}
+  JAVASCRIPT_VARIABLE: "^[a-zA-Z_]+[a-zA-Z_d]*", // javascript合法变量名 e.g name , age...
+  JAVASCRIPT_EXPRESSION: "(^[a-zA-Z_]+[a-zA-Z_d]*)(.[a-zA-Z_]+[a-zA-Zd]*)*" // javascript属性值表达式 e.g person.info.age
+};
 
 class Compiler {
   constructor(el, vm) {
@@ -34,7 +34,7 @@ class Compiler {
       // 没有找到el根节点给出警告
       console.error(`can not find element named ${el}`);
     }
-    this.vm.$el = this.el
+    this.vm.$el = this.el;
   }
 
   // 编译节点，如果子节点是node节点， 递归调用自身和compileNode， 如果不是 则调用 compileText
@@ -42,7 +42,7 @@ class Compiler {
     let childNodes = parentNode.childNodes;
     childNodes.forEach((node, index) => {
       // 不编译code代码节点
-      if (node.tagName === 'CODE') return
+      if (node.tagName === "CODE") return;
       if (this.isElement(node)) {
         this.compile(node);
         this.compileNode(node);
@@ -60,47 +60,53 @@ class Compiler {
     let text = node.textContent;
     if (reg.test(text)) {
       // 去掉{{}} 保留 value
-      if (node.parentElement.getAttribute("t-for") || node.parentElement.getAttribute("is-t-for")) {
-
+      if (
+        node.parentElement.getAttribute("t-for") ||
+        node.parentElement.getAttribute("is-t-for")
+      ) {
+        
       } else {
         // 捕获{{expr}} 双花括号中的表达式
-        let expr = text.match(reg)[1]
+        let expr = text.match(reg)[1];
         // 捕获data的属性表达式
         let dataAttrReg = /data(\.[a-zA-Z_]+[a-zA-Z_\d]*)+(\(\))*/g;
-        let watcherList = expr.match(dataAttrReg)
-        let methodReg = /\.([a-zA-Z_]+[a-zA-Z_\d])+(\(\))/
+        let watcherList = expr.match(dataAttrReg);
+        let methodReg = /\.([a-zA-Z_]+[a-zA-Z_\d])+(\(\))/;
 
         // 例如取出{{message}} 中的 message, 交给compileUtil.updateText 方法去查找vm.data的值并替换到节点
-        // let textValue = this.getData(attrName, this.vm.$data);
-        let execFn = new Function('data', `return ${expr}`)
-        let data = this.vm.$data
-        let value = execFn(data)
+        // let textValue = this.getValue(attrName, this.vm.$data);
+        let execFn = new Function("data", `return ${expr}`);
+        let data = this.vm.$data;
+        let value = execFn(data);
         compileUtil.updateText(value, node, this.vm);
 
         // 给每个attribute上设置watcher
         watcherList = watcherList.map(item => {
-          let attr = item.replace(methodReg, '')
-          attr = attr.split('.').slice(1).join('.')
-          new Watcher(this.vm, attr, expr , function(value) {
-            let expr = this.expr
-            let execFn = new Function('data', `return ${expr}`)
-            let data = this.vm.$data
-            let val = execFn(data)
+          let attr = item.replace(methodReg, "");
+          attr = attr
+            .split(".")
+            .slice(1)
+            .join(".");
+          new Watcher(this.vm, attr, expr, null, function(value) {
+            let expr = this.expr;
+            let execFn = new Function("data", `return ${expr}`);
+            let data = this.vm.$data;
+            let val = execFn(data);
             compileUtil.updateText(val, node, this.vm);
-          })
-          return attr
-        })
+          });
+          return attr;
+        });
       }
     }
   }
 
   // 传入表达式， 获得属性值
-  getData(expr, data) {
-    // 传入 expr 形如 'group.member.name', 找到$data上对应的属性值并返回
+  getValue(expr, base) {
+    // 传入 expr 形如 'group.member.name', 找到$base上对应的属性值并返回
     let arr = expr && expr.split(".");
     let ret = arr.reduce((prev, next) => {
       return prev[next];
-    }, data);
+    }, base);
     return ret;
   }
 
@@ -108,65 +114,92 @@ class Compiler {
   compileNode(node) {
     let attrs = node.getAttributeNames();
     // 把t-指令(不包括t-index)属性存到一个数组中
-    let directiveAttrs = attrs.filter((attrname) => {
-      return this.isDirective(attrname) && !this.isTFocus(attrname)
+    let directiveAttrs = attrs.filter(attrname => {
+      return this.isDirective(attrname) && !this.isTFocus(attrname);
     });
 
     directiveAttrs.forEach(item => {
-      let expr = node.getAttribute(item); // 属性值
-      expr = expr.split('.').slice(1).join('.')
-      new Watcher(this.vm, expr, expr, (value) => {
-        compileUtil[item](value, node, this.vm, expr);
-      })
-      let value = this.getData(expr, this.vm.$data);
+      if (item === 't-itemname' || item === 'is-t-for') return
+      let originalExpr = node.getAttribute(item); // 属性值
+      let expr = originalExpr.split(".").slice(1).join(".");
+
+      // t-bind logic
+      let bindAttrName = null
+      if (this.isTBind(item)) {
+        let startIndex = item.indexOf(':') + 1;
+        bindAttrName = item.slice(startIndex)
+        item = 't-bind'
+      } 
+      new Watcher(this.vm, expr, originalExpr, bindAttrName, (value, bindAttrName, originalExpr) => {
+        compileUtil[item](value, node, this.vm, expr, bindAttrName, originalExpr);
+      });
+      // debugger
+      var value = this.getValue(expr, this.vm.$data);
       if (compileUtil[item]) {
-        compileUtil[item](value, node, this.vm, expr);
+        compileUtil[item](value, node, this.vm, expr, bindAttrName, originalExpr);
       } else if (!this.isPrivateDirective(item) && !this.isEventBinding(item)) {
         console.warn(`can't find directive ${item}`);
       }
     });
 
     // 焦点记录逻辑
-    if (attrs.includes('t-index')) {
-      let focusIndex = node.getAttribute('t-index')
-      node.setAttribute('tabindex', this.vm.focuser.tid)
-      this.vm.focuser.addFocusMap(focusIndex, node)
+    if (attrs.includes("t-index")) {
+      let focusIndex = node.getAttribute("t-index");
+      node.setAttribute("tabindex", this.vm.focuser.tid);
+      this.vm.focuser.addFocusMap(focusIndex, node);
     }
 
     // @event 事件绑定逻辑
     let eventBindAttrs = attrs.filter(this.isEventBinding);
     eventBindAttrs.forEach(item => {
-      let expr = node.getAttribute(item)
-      let eventName = item.slice(1)
-      let reg = /\(([^)]+)\)/
-      let hasParams = reg.test(expr)
-      let fnName = expr.replace(reg, '')
-      let fn = this.getData(fnName, this.vm)
+      let expr = node.getAttribute(item);
+      let eventName = item.slice(1);
+      let reg = /\(([^)]+)\)/;
+      let hasParams = reg.test(expr);
+      let fnName = expr.replace(reg, "");
+      let fn = this.getValue(fnName, this.vm);
 
-      if (node.getAttribute('is-t-for')) { // 是 t-for 循环生成的列表, 则事件绑定在父元素上
-        let parentElement = node.parentElement
-        parentElement.addEventListener(eventName, (event) => {
-          if (event.target.getAttribute('is-t-for')) {
+      if (node.getAttribute("is-t-for")) {
+        // 是 t-for 循环生成的列表, 则事件绑定在父元素上
+        let parentElement = node.parentElement;
+        parentElement.addEventListener(eventName, event => {
+          if (event.target.getAttribute("is-t-for")) {
             if (hasParams) {
-                let params = expr.match(reg)[1].split(',').map(item => {
-                    return this.getData(item.trim(), this.vm.$data)
-                })
-                // 取到 事件回调函数 的参数值
-                let param = this.getData(event.target.getAttribute('t-scope'), this.vm.$data)[event.target.getAttribute('t-index')]
-                fn.call(this.vm, param)
+              let params = expr
+                .match(reg)[1]
+                .split(",")
+                .map(item => {
+                  return this.getValue(item.trim(), this.vm.$data);
+                });
+              // 取到 事件回调函数 的参数值
+              
+              let scope = event.target.getAttribute("t-scope")
+              let arrName = scope.split('.').slice(1).join('.')
+              let param = this.getValue(
+                arrName,
+                this.vm.$data
+              )[event.target.getAttribute("t-index")];
+              fn.call(this.vm, param);
             } else {
-              fn.call(this.vm)
+              fn.call(this.vm);
             }
           }
-        })
-      } else { // 非 t-for循环生成的元素
-        if (hasParams) { // fn含有参数
-          let params = expr.match(reg)[1].split(',').map(item => {
-              return this.getData(item.trim(), this.vm.$data)
-          })
-          node.addEventListener(eventName, fn.bind(this.vm, ...params))
-        } else { // fn不含参数
-          node.addEventListener(eventName, fn.bind(this.vm))
+        });
+      } else {
+        // debugger
+        // 非 t-for循环生成的元素
+        if (hasParams) {
+          // fn含有参数
+          let params = expr
+            .match(reg)[1]
+            .split(",")
+            .map(item => {
+              return this.getValue(item.trim(), this.vm.$data);
+            });
+          node.addEventListener(eventName, fn.bind(this.vm, ...params));
+        } else {
+          // fn不含参数
+          node.addEventListener(eventName, fn.bind(this.vm));
         }
       }
     });
@@ -184,20 +217,20 @@ class Compiler {
 
   // 判断节点属性是否是t指令
   isDirective(attrname) {
-    return attrname.includes("t-") || attrname.indexOf(':') === 0;
+    return attrname.includes("t-") || attrname.indexOf(":") === 0;
   }
 
   // 判断是否是t-index
   isTFocus(attrname) {
-    return attrname === 't-index'
+    return attrname === "t-index";
   }
 
   isTFor(attrname) {
-    return attrname === 't-for'
+    return attrname === "t-for";
   }
 
   isTBind(attrname) {
-    return /(^t-bind:|^:)/.test(attrname)
+    return /(^t-bind:|^:)/.test(attrname);
   }
 
   // 根据传入的值， 如果是dom节点直接返回， 如果是选择器， 则返回相应的dom节点

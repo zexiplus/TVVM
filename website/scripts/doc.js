@@ -22,29 +22,53 @@ var tv = new TVVM({
   },
   data: function () {
     return {
-      menuShow: false
+      menuShow: false,
+      navClassList: {
+        'menu-hidden': true,
+        'menu-show': false
+      },
+      cloakClassList: {
+        'cloak-hidden': true,
+        'cloak-show': false
+      },
+      buttonClassList: {
+        'icon-back': false,
+        'icon-menu': true
+      }
     }
   },
   methods: {
     toggleMenu: function (event) {
       event.preventDefault()
-      var menu = document.querySelector('.left-nav')
       var button = document.querySelector('#menu-button')
-      var cloak = document.querySelector('.cloak')
       if (this.menuShow) {
         this.menuShow = false
-        button.classList.replace('icon-back', 'icon-menu')
-        menu.classList.add('menu-hidden')
-        menu.classList.remove('menu-show')
-        cloak.classList.add('cloak-hidden')
-        cloak.classList.remove('cloak-show')
+        this.navClassList = {
+          'menu-hidden': true,
+          'menu-show': false
+        }
+        this.cloakClassList = {
+          'cloak-hidden': true,
+          'cloak-show': false
+        }
+        this.buttonClassList = {
+          'icon-back': false,
+          'icon-menu': true
+        }
       } else {
         this.menuShow = true
-        button.classList.replace('icon-menu', 'icon-back')
-        menu.classList.add('menu-show')
-        menu.classList.remove('menu-hidden')
-        cloak.classList.add('cloak-show')
-        cloak.classList.remove('cloak-hidden')
+        this.navClassList = {
+          'menu-hidden': false,
+          'menu-show': true
+        }
+        this.cloakClassList = {
+          'cloak-hidden': false,
+          'cloak-show': true
+        }
+        this.buttonClassList = {
+          'icon-back': true,
+          'icon-menu': false
+        }
       }
     }
   }

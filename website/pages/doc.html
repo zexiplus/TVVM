@@ -19,9 +19,9 @@
 <body>
   <div id="doc">
     <nav class="navbar">
-      <div class="logo">TVVM</div>
-      <div class="menu-button" @click="toggleMenu" @touchstart="toggleMenu">
-        <i id="menu-button" class="iconfont icon-menu"></i>
+      <div class="logo" >TVVM</div>
+      <div class="menu-button" @click="methods.toggleMenu" @touchstart="methods.toggleMenu">
+        <i id="menu-button" t-class="data.buttonClassList" class="iconfont icon-menu"></i>
         <span style="margin-left: 10px;">TVVM</span>
       </div>
       <div class="link-list">
@@ -33,7 +33,7 @@
       </div>
     </nav>
     <div class="container">
-      <div class="left-nav">
+      <div class="left-nav" t-class="data.navClassList">
         <div class="nav-list-wrapper"> 
           <span class="link-title">
             <a href="#start">开始</a>
@@ -381,7 +381,7 @@ focus: {
 
 
     </div>
-    <div class="cloak cloak-hidden" @click="toggleMenu" @touchstart="toggleMenu"></div>
+    <div class="cloak cloak-hidden" t-class="data.cloakClassList" @click="methods.toggleMenu" @touchstart="methods.toggleMenu"></div>
     <footer class="footbar">
 
     </footer>

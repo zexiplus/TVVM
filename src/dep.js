@@ -3,7 +3,7 @@ class Dep {
     this.subs = [];
   }
   addSubs(watcher) {
-    this.subs.push(watcher); // 添加订阅者
+    this.subs.push(watcher); // add subscribers
   }
   notify() {
     this.subs.forEach(watcher => watcher.update());

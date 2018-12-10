@@ -1,21 +1,22 @@
-import Observer from './observer'
-import Compiler from './compiler'
-import Focuser from './focuser'
-import Lifecycle from './lifycycle'
+import Observer from "./observer";
+import Compiler from "./compiler";
+import Focuser from "./focuser";
+import Lifecycle from "./lifycycle";
 
 class TVVM {
   constructor(options) {
     // 初始化参数， 把el， data等进行赋值与绑定
     // data如果是函数就取返回值， 如果不是则直接赋值
     // 初始化焦点管理对象
-    new Focuser(this, options)
+    new Focuser(this, options);
     // 初始化生命周期对象
-    new Lifecycle(options.hooks || {}, this)
+    new Lifecycle(options.hooks || {}, this);
     // beforeCreate
-    this.callHook('beforeCreate')
+    this.callHook("beforeCreate");
 
-    this.$data = typeof options.data === "function" ? options.data() : options.data;
-    this.methods = options.methods
+    this.$data =
+      typeof options.data === "function" ? options.data() : options.data;
+    this.methods = options.methods;
     // 数据代理, 把data对象属性代理到vm实例上
     this.proxy(this.$data, this);
     this.proxy(options.methods, this);
@@ -25,13 +26,13 @@ class TVVM {
       // 数据劫持,
       new Observer(this.$data, this);
       // created
-      this.callHook('created')
+      this.callHook("created");
       // beforeMounte
-      this.callHook('beforeMount')
+      this.callHook("beforeMount");
       new Compiler(options.el, this);
-      this.focuser.generateIndexMap()
+      this.focuser.generateIndexMap();
       // mounted 此时可以访问 this.$el
-      this.callHook('mounted')
+      this.callHook("mounted");
     }
   }
   // 数据代理, 访问/设置 this.a 相当于访问设置 this.data.a

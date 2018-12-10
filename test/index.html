@@ -97,12 +97,12 @@
       </div>
 
       <!-- t-for test -->
-      <!-- <div class="test-block">
+      <div class="test-block">
         <span>t-for test</span>
         <ul style="list-style: none;">
-          <li @click="methods.testFn(item, message)" t-for="item in data.arr">{{item + 1}}</li>
+          <li @click="methods.testFn(item)" t-for="item in data.arr">{{item + 1}}</li>
         </ul>
-      </div> -->
+      </div>
 
       <!-- t-value test -->
       <div class="test-block">
@@ -166,8 +166,8 @@
         handleHidden: function () {
           this.display = false
         },
-        testFn: function (a, b) {
-          console.log('click num is', a, b)
+        testFn: function (a) {
+          console.log('click num is', a)
         }
       },
       focus: {
@@ -175,10 +175,10 @@
       },
       hooks: {
         beforeCreate: function () {
-          console.log('this.message', this.message)
+          console.log('this.arr', this.arr)
         },
         created: function () {
-          console.log('this.message', this.message)
+          console.log('this.arr', this.arr)
         },
         beforeMount: function () {
           console.log('this.$el', this.$el)
