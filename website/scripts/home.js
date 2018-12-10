@@ -4,12 +4,20 @@ new TVVM({
     return {
       userinfo: {
         name: 'Float'
+      },
+      remoteControl: {
+        opacity: 1,
+        bottom: 0,
+        style: ''
       }
     }
   },
   methods: {
     handleScroll: function (event) {
-      console.log(event)
+      var percent = (event.target.scrollTop / 330).toFixed(2)
+      this.remoteControl.bottom = (- (250 * percent).toFixed(2)) + 'px'
+      this.remoteControl.opacity = percent > 1 ? 0 : (1 - percent).toFixed(2)
+      this.remoteControl.style = `opacity: ${this.remoteControl.opacity}; bottom: ${this.remoteControl.bottom}`
     },
     createPressEvent: function (keyCode) {
       var customEvent = new Event('keydown', {bubbles: true, cancelable: true})

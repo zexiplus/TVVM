@@ -30,6 +30,7 @@ a:active {
 
 .navbar {
   position: fixed;
+  top: 0;
   height: 60px;
   width: 100%;
   border-bottom: 1px solid #ebebeb;
@@ -63,7 +64,7 @@ a:active {
 .container {
   position: relative;
   top: 61px;
-  display: flex;
-  flex-direction: column;
+  height: calc(100vh - 61px);
+  overflow: auto;
   background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
 }

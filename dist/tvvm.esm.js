@@ -613,6 +613,10 @@ var defaultFocusOptions = {
     subVolume: {
       codes: [174],
       handler: blankFn
+    },
+    shutdown: {
+      codes: [71],
+      handler: blankFn
     }
   },
   keysMapMergeCoverage: false
