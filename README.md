@@ -4,7 +4,7 @@
 
 轻量级TV端WEB应用开发框架
 
-TVVM是一个专门为TV WEB APP开发的MVVM模式框架， 它帮助开发者快速开发应用而无需关心焦点控制， 键盘绑定， 数据绑定等通用逻辑。它没有依赖， 体型小巧（10kb）,  官方文档请参考 [offcial web](https://zexiplus.github.io/website/tvvm/)
+TVVM是一个专门为TV WEB APP开发的MVVM模式框架， 它帮助开发者快速开发应用而无需关心焦点控制， 键盘绑定， 数据绑定等通用逻辑。它没有依赖， 体型小巧（20kb）,  官方文档请参考 [offcial web](https://zexiplus.github.io/website/tvvm/)
 
 
 
@@ -37,6 +37,100 @@ var tv = new TVVM({
         ...options
     })
 </script>
+```
+
+
+
+## 特色
+
+### 焦点自动控制
+
+TV应用的特点是使用遥控器控制焦点移动， 而并非鼠标点击/手势触摸事件来触发控件， 从而进行下一步操作。
+
+这需要我们通过编程的方式控制焦点的移动和跳转。TVVM致力于减少焦点移动的代码逻辑， 通过配置t-index索引， 而非编程的方式解决焦点的移动。
+
+TVVM把应用分成横轴空间和纵轴空间， 例如 声明 `t-index="0-1"` 代表应用是第1行 (row=0) 第2列 (col=1)为当前焦点 , 当你点击遥控器的向下移动按钮时 row 增加，col 不变， 此时焦点从 `t-index="0-1"`移动至 `t-index="1-1"`的元素上 。这些在TVVM内部已经做好了， 开发者只需要在焦点块元素上声明 t-index索引即可。
+
+除此之外, TVVM还提供了丰富的选项， 例如默认焦点， 焦点元素样式， 边界穿越， 按键值配置等。
+
+**focus选项**
+
+```js
+new TVVM({
+    ...,
+    focus: {
+    	defaultFocusIndex: '0-1', // 默认焦点
+    	circle: {
+    		horizontal: true, // 当焦点移动到边界时在水平方向可穿越
+    		vertical: true // 当焦点移动到边界时在垂直方向可穿越
+		},
+        ...options
+	}
+})
+```
+
+**html模板**
+
+```html
+<style>
+    *:focus {
+        outline: none;
+        border: 2px solid #fff;
+    }
+</style>
+<div class="tv">
+    <div>
+        <div>
+            <div t-index="0-1">0-1</div>
+            <div t-index="0-2">0-2</div>
+            <div t-index="0-3">0-3</div>
+        </div>
+    </div>
+    <div>
+        <div t-index="1-0, 2-0" real-focus="true">
+            <span>1-0,</span> <span>2-0</span>
+        </div>
+        <div>
+            <div t-index="1-1, 1-2, 1-3">
+                <span>1-1,</span> <span>1-2,</span> <span>1-3</span>
+            </div>
+            <div>
+                <div t-index="2-1">2-1</div>
+                <div t-index="2-2">2-2</div>
+                <div t-index="2-3">2-3</div>
+            </div>
+        </div>
+    </div>
+</div>
+```
+
+**显示结果**
+
+![t-index-demo](./website/imgs/index.bmp)
+
+### 按键去抖优化
+
+某些物理遥控器在按下按钮时， 有可能高速触发按键事件， 这对应用会产生不良后果， TVVM在绑定事件的同时在内部会优化操作逻辑， 利用函数去抖控制按键触发频率， 防止因为物理设备差异导致应用逻辑混乱。
+
+
+
+### 数据驱动
+
+TVVM与大多数mvvm思想的前端框架一样， 采用数据驱动的开发模式， 简单来讲，数据驱动使开发者只用关系数据的修改， 而无需手动将数据同步至视图。以下是 t-value 指令来实现双向数据绑定的例子， span标签内的内容会随着input输入框的值的改变而改变
+
+
+
+```js
+data: function () {
+    return {
+        demoInputValue: 'demo'
+    }
+}
+```
+
+```html
+<input t-value="data.demoInputValue" />
+<span>{{data.demoInputValue}}</span>
 ```
 
 
@@ -134,11 +228,6 @@ focus选项用于设置焦点移动， 键值绑定， 默认焦点等逻辑
 
             },
             keysMapMergeCoverage: false,
-            specialKeys: {
-              '11': function (event, node, index, prevNode) {
-
-              }
-            },
             circle: {
               horizontal: true,
               vertical: true,
@@ -427,7 +516,7 @@ data: function () {
 ```html
 <div :id="data.id" :height="data.height" :class="data.classname"></div>
 <!-- 渲染为 -->
-<div t-bind:id="data.id" t-bind:height="data.height" t-bind:class="data.classname"></div>
+<div id="billboard" height="365" class="spin"></div>
 ```
 
 #### t-value
@@ -437,13 +526,14 @@ data: function () {
 ```js
 data: function () {
     return {
-        inputValue: ''
+        demoInputValue: 'demo'
     }
 }
 ```
 
 ```html
-<input t-value="data.inputValue" />
+<input t-value="data.demoInputValue" />
+<span>{{data.demoInputValue}}</span>
 ```
 
 
@@ -465,7 +555,7 @@ methods: {
 
 ```html
 <div @click="methods.clickHandler"></div>
-<div @click="methods.clickHandler2(data.inputValue)"
+<div @click="methods.clickHandler2(data.inputValue)"></div>
 ```
 
 

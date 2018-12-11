@@ -40,8 +40,11 @@ h1, h2, h3, h4 {
   color: #0048ab;
 }
 
+span {
+  line-height: 1.5rem;
+}
+
 .container {
-  font-family: 'bebasneue';
   display: flex;
   flex-direction: row;
   position: relative;
@@ -55,7 +58,6 @@ h1, h2, h3, h4 {
 .left-nav {
   width: 200px;
   height: calc(100vh - 61px);
-  font-family: 'bebasneue';
   font-size: 14px;
   display: flex;
   z-index: 1000;
@@ -141,6 +143,20 @@ h1, h2, h3, h4 {
 .desc-text {
   margin-top: 1rem;
 }
+
+.block-indent-1 {
+  padding-left: 2rem;
+}
+.options-dot {
+  margin-bottom: 1rem;
+}
+.options-dot:before {
+  content: '● ';
+}
+.demo-wrapper {
+  margin-left: 2rem;
+}
+
 pre {
   overflow: hidden;
   padding: 0 !important;

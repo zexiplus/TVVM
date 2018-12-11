@@ -3,6 +3,9 @@
     width: 600px !important;
     height: 400px !important;
   }
+  .tv-wrapper {
+    height: 500px !important;
+  }
 }
 
 .high-light {
@@ -12,6 +15,13 @@
   box-shadow: 1px 1px 5px rgba(25,26,27,20%);
 }
 
+/* tv style */
+.tv-wrapper {
+  height: 40vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .tv {
   box-sizing: border-box;
   position: relative;
@@ -22,7 +32,6 @@
   border: 0.3rem solid #777;
   border-bottom: 0.8rem solid #777;
   border-radius: 5px;
-  margin: 50px auto;
   color: #fff;
   background-image: linear-gradient(120deg, #a6c0fe 0%, #f68084 100%);
 }
@@ -151,11 +160,171 @@
   background: #30cfd0;
 }
 
-.tv-wrapper {
-
+/* remote control style */
+.control-wrapper {
+  position: fixed;
+  bottom: 0;
+  left: calc(50vw - 75px);
+  width: auto;
+}
+.remote-control {
+  width: 150px;
+  height: 300px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 0%, rgba(0, 0, 0, 0.35) 100%),
+  radial-gradient(at top center, rgba(255, 255, 255, 0.15) 0%, rgba(0, 0, 0, 0.60) 120%) #989898;
+  background-blend-mode: multiply,
+  multiply;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-direction: column;
 }
 
+.power {
+  margin-top: 10px;
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  color: rgb(160, 41, 41);
+  text-align: center;
+  line-height: 40px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+  background-image: radial-gradient(at center, rgba(70, 70, 70, 0.2) 0%, rgba(50, 50, 50, 0.3) 100%);
+}
+.compass {
+  width: 120px;
+  height: 120px;
+  position: relative;
+  border-radius: 60px;
+  background: radial-gradient(at center, rgba(0, 0, 0, 0.5) 0%, rgba(155, 155, 155, 0.1) 50%, rgba(0, 0, 0, 0.5) 100%);
+  background-blend-mode: screen;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.arrow {
+  color: rgba(188, 188, 188, 0.5);
+  position: absolute;
+}
+.arrow-left {
+  left: 5px;
+}
+.arrow-right {
+  right: 5px;
+}
+.arrow-up {
+  top: 5px;
+}
+.arrow-down {
+  bottom: 5px;
+}
+.enter {
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
+  background-image:radial-gradient(at center, rgba(155, 155, 155, 0.5) 0%, rgba(0, 0, 0, 0.5) 100%)
+  
+}
+.three-bar {
+  width: 90%;
+  display: flex;
+  color: rgba(188, 188, 188, 0.5);
+  flex-direction: row;
+  justify-content: space-around;
+}
+.volume {
+  height: 35px;
+  width: 100px;
+  border-radius: 15px;
+}
+.dot {
+  width: 35px;
+  height: 35px;
+  border-radius: 15px;
+  text-align: center;
+  line-height: 35px;
+  background-image: radial-gradient(at center, rgba(70, 70, 70, 0.8) 0%, rgba(50, 50, 50, 0.6) 100%);
+}
+
+/* content style */
 .content-wrapper {
   height: 100vh;
-  background: #fff;
+  background-color: #fff;
+  /* background-color: #00A388; */
 }
+.download-wrapper {
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 70vh;
+}
+.download-wrapper * {
+  text-align: center;
+}
+.symbol {
+  height: 200px;
+  display: flex;
+  font-size: 1.5rem;
+  align-items: center;
+  justify-content: center;
+}
+.download-wrapper span {
+  font-size: 1.5rem;
+  margin: 50px 0 50px;
+}
+.download-button {
+  width: 200px;
+  height:80px;
+  line-height: 80px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  border: 1px solid #000;
+}
+.download-button:hover {
+  color: rgba(0, 0, 0, 0.5);
+  border-color: rgba(0, 0, 0, 0.5);
+}
+.content-1 {
+  background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
+  height: 40vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.feature-block {
+  display: flex;
+  width: 30%;
+  text-align: center;
+  flex-direction: column;
+  justify-content: center;
+}
+.feature-desc {
+  text-align: left;
+  display: block;
+}
+.feature-block a {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #0048ab;
+}
+
+/* nav style */
+.nav-dark {
+  background-color: #00A388;
+  border: 0;
+  color: #e8e8e8;
+}
+.nav-dark a {
+  color: #e8e8e8 !important;
+}
+
+.nav-light {
+  background-color: rgba(255,255,255,0.9);
+  color: #666;
+}
+

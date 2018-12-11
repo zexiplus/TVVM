@@ -9,15 +9,41 @@ new TVVM({
         opacity: 1,
         bottom: 0,
         style: ''
+      },
+      downloadWrapper: {
+        opacity: 0,
+        style: ''
+      },
+      tv: {
+        height: 0
+      },
+      nav: {
+        classList: {
+          'nav-dark': false,
+          'nav-light': true
+        }
       }
     }
   },
+  hooks: {
+    mounted: function () {
+      var tvWrapper = document.querySelector('.tv-wrapper')
+      this.tv.height = tvWrapper.getBoundingClientRect().height
+    }
+  },
   methods: {
+    gotoDownload: function () {
+      window.location.assign('https://unpkg.com/tvvm@1.0.2/dist/tvvm.min.js')
+    },
     handleScroll: function (event) {
-      var percent = (event.target.scrollTop / 330).toFixed(2)
-      this.remoteControl.bottom = (- (250 * percent).toFixed(2)) + 'px'
-      this.remoteControl.opacity = percent > 1 ? 0 : (1 - percent).toFixed(2)
+      var percent = (event.target.scrollTop / this.tv.height).toFixed(2) > 1 ? 1 : (event.target.scrollTop / this.tv.height).toFixed(2)
+
+      this.remoteControl.bottom = - (300 * percent).toFixed(2) + 'px'
+      this.remoteControl.opacity = (1 - percent).toFixed(2)
       this.remoteControl.style = `opacity: ${this.remoteControl.opacity}; bottom: ${this.remoteControl.bottom}`
+
+      this.downloadWrapper.opacity = percent
+      this.downloadWrapper.style = `opacity: ${this.downloadWrapper.opacity}`
     },
     createPressEvent: function (keyCode) {
       var customEvent = new Event('keydown', {bubbles: true, cancelable: true})

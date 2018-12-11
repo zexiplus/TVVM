@@ -1,11 +1,12 @@
 @font-face {
-  font-family: 'bebasneue';
-  src: local('BebasNeue'), url('../fonts/BebasNeue.ttf') format('truetype');
+  font-family: 'raleway';
+  src: local('raleway'), url('../fonts/Raleway-Regular.ttf') format('truetype');
 }
 * {
   margin: 0;
   padding: 0;
   border: 0;
+  font-family: 'raleway';
 }
 
 html {
@@ -33,18 +34,18 @@ a:active {
   top: 0;
   height: 60px;
   width: 100%;
+  box-sizing: border-box;
   border-bottom: 1px solid #ebebeb;
   background-color: rgba(255,255,255,0.9);
   display: flex;
   justify-content: space-between;
   overflow: hidden;
-  font-family: 'bebasneue';
   font-size: 18px;
   z-index: 1000;
 }
 .logo {
   background-image: url(../imgs/logo.png);
-  background-size: 60px 45px;
+  background-size: 40px 35px;
   background-repeat: no-repeat;
   background-position: 10% 50%;
   cursor: pointer;
@@ -63,8 +64,8 @@ a:active {
 }
 .container {
   position: relative;
-  top: 61px;
-  height: calc(100vh - 61px);
+  top: 60px;
+  height: calc(100vh - 60px);
   overflow: auto;
   background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
 }

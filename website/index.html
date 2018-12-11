@@ -7,7 +7,6 @@
     <title>TVVM</title>
     <link rel="stylesheet" href="./style/common.css" />
     <link rel="stylesheet" href="./style/iconfont.css" />
-    <link rel="stylesheet" href="./style/index.css" />
     <link rel="stylesheet" href="./style/home.css" />
     <link rel="stylesheet" href="./style/tomorrow.css" />
     <link rel="shortcut icon" href="./favicon.ico" />
@@ -20,7 +19,7 @@
   </head>
   <body>
     <div id="tv">
-      <nav class="navbar">
+      <nav class="navbar" t-class="data.nav.classList">
         <div class="logo">TVVM</div>
         <div class="link-list">
           <a style="font-weight: bold;">Home</a> <span>/</span>
@@ -68,12 +67,45 @@
         </div>
         
         <div class="content-wrapper">
+          <div class="download-wrapper" :style="data.downloadWrapper.style">
+            <div class="symbol">
+              <h1>TVVM</h1>
+            </div>
+            <span>轻量级响应式TV WEB应用开发框架</span>
+            <div class="button-group">
+              <div class="download-button" @click="methods.gotoDownload">download</div>
+            </div>
+          </div>
 
+          <div class="content-1">
+            <div class="feature-block">
+              <a href="./pages/doc.html#focus-control">焦点控制</a>
+              <div>
+                <span class="feature-desc">
+                  TV应用的特点是使用遥控器控制焦点移动， 从而进行下一步操作。
+                  TVVM致力于减少焦点移动的代码逻辑， 通过配置t-index索引， 而非编程的方式解决焦点的移动。
+                </span>
+              </div>
+            </div>
+            <div class="feature-block">
+              <a href="./pages/doc.html#event-optmize">按键优化</a>
+              <span class="feature-desc">
+                  某些物理遥控器在按下按钮时， 有可能高速重复触发按键事件， 这对应用会产生不良后果， 
+                  TVVM在绑定事件的同时在内部会优化操作逻辑， 利用函数去抖控制按键触发频率， 防止因为物理设备差异导致应用逻辑混乱。
+              </span>
+            </div>
+            <div class="feature-block">
+              <a href="./pages/doc.html#data-drive">数据驱动</a>
+              <span class="feature-desc">
+                  TVVM与大多数mvvm思想的前端框架一样， 采用数据驱动的开发模式， 简单来讲，数据驱动使开发者只用关系数据的修改， 而无需手动将数据同步至视图。
+              </span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="control-wrapper">
-        <div class="remote-control" :style="data.remoteControl.style">
+      <div class="control-wrapper" :style="data.remoteControl.style">
+        <div class="remote-control">
           <div
             class="power"
             @click="methods.pressPower"
@@ -131,7 +163,7 @@
               <i class="iconfont icon-menu"></i>
             </div>
           </div>
-          <!-- <div class="volume"></div> -->
+          <div class="volume"></div>
         </div>
       </div>
       <footer class="footbar"></footer>

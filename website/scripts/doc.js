@@ -22,6 +22,7 @@ var tv = new TVVM({
   },
   data: function () {
     return {
+      demoInputValue: 'demo',
       menuShow: false,
       navClassList: {
         'menu-hidden': true,
