@@ -37,8 +37,8 @@ new TVVM({
     },
     handleScroll: function (event) {
       var percent = (event.target.scrollTop / this.tv.height).toFixed(2) > 1 ? 1 : (event.target.scrollTop / this.tv.height).toFixed(2)
-
-      this.remoteControl.bottom = - (300 * percent).toFixed(2) + 'px'
+      var remoteHeight = document.querySelector('.remote-control').getBoundingClientRect().height
+      this.remoteControl.bottom = - (remoteHeight * percent).toFixed(2) + 'px'
       this.remoteControl.opacity = (1 - percent).toFixed(2)
       this.remoteControl.style = `opacity: ${this.remoteControl.opacity}; bottom: ${this.remoteControl.bottom}`
 

@@ -4,7 +4,7 @@
 
 轻量级TV端WEB应用开发框架
 
-TVVM是一个专门为TV WEB APP开发的MVVM模式框架， 它帮助开发者快速开发应用而无需关心焦点控制， 键盘绑定， 数据绑定等通用逻辑。它没有依赖， 体型小巧（20kb）,  官方文档请参考 [offcial web](https://zexiplus.github.io/website/tvvm/)
+TVVM是一个专门为TV WEB APP开发的MVVM模式框架， 它帮助开发者快速开发应用而无需关心焦点控制， 键盘绑定， 数据绑定等通用逻辑。它没有依赖， 体型小巧（20kb）,  官方文档请参考 [offcial web](https://zexiplus.github.io/tvvm/)
 
 
 

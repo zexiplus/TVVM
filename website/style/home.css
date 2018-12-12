@@ -17,10 +17,12 @@
 
 /* tv style */
 .tv-wrapper {
-  height: 40vh;
+  height: auto;
+  padding: 20px 0;
   display: flex;
   justify-content: center;
   align-items: center;
+  background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
 }
 .tv {
   box-sizing: border-box;
@@ -169,7 +171,7 @@
 }
 .remote-control {
   width: 150px;
-  height: 300px;
+  height: 240px;
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 0%, rgba(0, 0, 0, 0.35) 100%),
   radial-gradient(at top center, rgba(255, 255, 255, 0.15) 0%, rgba(0, 0, 0, 0.60) 120%) #989898;
   background-blend-mode: multiply,
@@ -236,7 +238,7 @@
   justify-content: space-around;
 }
 .volume {
-  height: 35px;
+  height: 5px;
   width: 100px;
   border-radius: 15px;
 }
@@ -251,23 +253,24 @@
 
 /* content style */
 .content-wrapper {
-  height: 100vh;
   background-color: #fff;
   /* background-color: #00A388; */
 }
 .download-wrapper {
+  padding: 5vh 0;
   opacity: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  height: 70vh;
+  justify-content: space-around;
+  height: auto;
 }
 .download-wrapper * {
   text-align: center;
 }
 .symbol {
-  height: 200px;
+  height: 100px;
+  margin-top: 2rem;
   display: flex;
   font-size: 1.5rem;
   align-items: center;
@@ -280,6 +283,7 @@
 .download-button {
   width: 200px;
   height:80px;
+  margin-bottom: 4rem;
   line-height: 80px;
   font-size: 1.5rem;
   cursor: pointer;
@@ -289,23 +293,40 @@
   color: rgba(0, 0, 0, 0.5);
   border-color: rgba(0, 0, 0, 0.5);
 }
+
+@media only screen and (min-width: 600px) {
+  .content-1 {
+    height: 40vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+  .feature-block {
+    display: flex;
+    width: 30% !important;
+    text-align: center !important;
+  }
+  .feature-desc {
+    height: 150px !important;
+  }
+}
 .content-1 {
+  padding-top: 1rem;
   background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
-  height: 40vh;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
 }
 .feature-block {
+  width: 80%;
+  margin: 2rem auto;
+  text-align: left;
   display: flex;
-  width: 30%;
-  text-align: center;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-around;
 }
+
 .feature-desc {
   text-align: left;
   display: block;
+  height: auto;
 }
 .feature-block a {
   font-size: 1.5rem;
